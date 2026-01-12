@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Trilhas de Estudo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    header {
+      background: #020617;
+      padding: 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .trilha {
+      background: #020617;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .trilha h2 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #1e293b;
+      flex-wrap: wrap;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    .left {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #334155;
+      height: fit-content;
+    }
+
+    .done {
+      background: #166534;
+      color: #bbf7d0;
+    }
+
+    .progress {
+      background: #92400e;
+      color: #fde68a;
+    }
+
+    a {
+      color: #22d3ee;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    input[type="text"] {
+      margin-top: 4px;
+      padding: 4px;
+      border-radius: 6px;
+      border: none;
+      width: 140px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: #2563eb;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    button.secondary {
+      background: #475569;
+      margin-top: 10px;
+    }
+
+    button.delete {
+      background: #dc2626;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 600px) {
+      li {
+        flex-direction: column;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Trilhas de Estudo</h1>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  Progresso salvo no navegador (localStorage)
+</footer>
+
+<script>
+  const storageKey = 'trilhas-estudo-v3';
+
+  const defaultData = [
+    { nome: 'Testes de QA', id: 'qa', links: [] },
+    { nome: 'Cibersegurança', id: 'cyber', links: [] },
+    { nome: 'JavaScript', id: 'js', links: [] },
+    { nome: 'Python', id: 'python', links: [] }
+  ];
+
+  const data = JSON.parse(localStorage.getItem(storageKey)) || defaultData;
+
+  function save() {
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  }
+
+  function addLink(trilhaId) {
+    const title = prompt('Título da aula:');
+    if (!title) return;
+
+    const url = prompt('Link da videoaula:');
+    if (!url) return;
+
+    const trilha = data.find(t => t.id === trilhaId);
+    trilha.links.push({
+      title,
+      url,
+      status: 'progress',
+      time: ''
+    });
+
+    save();
+    render();
+  }
+
+  function updateTime(trilhaId, index, value) {
+    const link = data.find(t => t.id === trilhaId).links[index];
+    link.time = value;
+    save();
+  }
+
+  function toggleStatus(trilhaId, index) {
+    const link = data.find(t => t.id === trilhaId).links[index];
+    link.status = link.status === 'done' ? 'progress' : 'done';
+    save();
+    render();
+  }
+
+  function deleteLink(trilhaId, index) {
+    if (!confirm('Tem certeza que deseja deletar esta aula?')) return;
+    const trilha = data.find(t => t.id === trilhaId);
+    trilha.links.splice(index, 1);
+    save();
+    render();
+  }
+
+  function render() {
+    const app = document.getElementById('app');
+    app.innerHTML = '';
+
+    data.forEach(trilha => {
+      const div = document.createElement('div');
+      div.className = 'trilha';
+
+      div.innerHTML = `
+        <h2>${trilha.nome}</h2>
+        <ul>
+          ${trilha.links.map((l, i) => `
+            <li>
+              <div class="left">
+                <span class="status ${l.status === 'done' ? 'done' : 'progress'}">
+                  ${l.status === 'done' ? 'Concluído' : 'Em andamento'}
+                </span>
+
+                <div>
+                  <strong>${l.title}</strong><br>
+                  <a href="${l.url}" target="_blank">${l.url}</a><br>
+
+                  <input
+                    type="text"
+                    placeholder="Onde parei? ex: 2:43"
+                    value="${l.time || ''}"
+                    oninput="updateTime('${trilha.id}', ${i}, this.value)"
+                  />
+                </div>
+              </div>
+
+              <div class="actions">
+                <button onclick="toggleStatus('${trilha.id}', ${i})">
+                  ${l.status === 'done' ? 'Voltar andamento' : 'Concluir'}
+                </button>
+                <button class="delete" onclick="deleteLink('${trilha.id}', ${i})">
+                  Deletar
+                </button>
+              </div>
+            </li>
+          `).join('')}
+        </ul>
+
+        <button class="secondary" onclick="addLink('${trilha.id}')">
+          + Adicionar videoaula
+        </button>
+      `;
+
+      app.appendChild(div);
+    });
+  }
+
+  render();
+</script>
+
+</body>
+</html>
