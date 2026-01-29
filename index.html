@@ -2,45 +2,50 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudyFlix - Sua Trilha de Estudos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyFlix - Trilhas de Estudos</title>
 
-  <!-- Ícones (Font Awesome) para usar os ícones da interface -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
-  <!-- Fontes para melhorar a leitura e a identidade visual -->
+  <!-- Fontes para melhorar leitura e identidade visual -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Folha de estilos do projeto -->
+  <!-- Ícones (Font Awesome) para ícones de botões, categorias, status, etc -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- CSS do projeto -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
   <!--
     Barra superior fixa:
-    Serve para manter logo, busca e acesso rápido sempre visíveis.
+    Serve para exibir marca, busca e área do usuário.
   -->
-  <nav class="barra-navegacao" id="barraNavegacao">
-    <div class="container-navegacao">
-      <!-- Logo / marca -->
-      <div class="logo-navegacao" aria-label="StudyFlix">
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
         <i class="fas fa-graduation-cap"></i>
-        <h1>Study<span>Flix</span></h1>
+        <h1>StudyFlix</h1>
       </div>
 
-      <!-- Busca: serve para filtrar trilhas e aulas por texto -->
-      <div class="busca-navegacao">
-        <input id="entradaBusca" type="text" placeholder="Buscar trilhas ou aulas..." />
-        <button id="botaoBusca" type="button" aria-label="Buscar">
+      <!--
+        Busca:
+        Serve para filtrar trilhas e aulas por texto em tempo real.
+      -->
+      <div class="nav-search">
+        <input id="searchInput" type="text" placeholder="Buscar trilhas, aulas ou links..." />
+        <button id="searchBtn" type="button" aria-label="Buscar">
           <i class="fas fa-search"></i>
         </button>
       </div>
 
-      <!-- Avatar: serve como área visual de usuário (pode evoluir para perfil no futuro) -->
-      <div class="usuario-navegacao" title="Usuário">
-        <div class="avatar-usuario">
+      <!--
+        Área do usuário:
+        Serve como elemento visual de perfil (pode evoluir depois).
+      -->
+      <div class="nav-user" title="Usuário">
+        <div class="user-avatar">
           <i class="fas fa-user"></i>
         </div>
       </div>
@@ -49,284 +54,290 @@
 
   <!--
     Banner principal:
-    Serve para apresentar a proposta e dar atalhos para ações principais.
+    Serve para apresentar a proposta e atalhos de ações principais.
   -->
-  <section class="banner-hero" aria-label="Banner principal">
-    <div class="conteudo-hero">
-      <h2>Transforme seu aprendizado</h2>
-      <p>Organize trilhas de estudo como séries do Netflix</p>
+  <header class="hero-banner">
+    <div class="hero-content">
+      <h2>Organize seus estudos como séries</h2>
+      <p>Crie trilhas, adicione aulas e acompanhe seu progresso.</p>
 
-      <div class="botoes-hero">
-        <button class="botao-primario" id="botaoNovaTrilha" type="button">
+      <div class="hero-buttons">
+        <!-- Serve para abrir o modal de criar trilha -->
+        <button id="addCourseBtn" class="btn-primary" type="button">
           <i class="fas fa-plus-circle"></i> Nova Trilha
         </button>
-        <button class="botao-secundario" id="botaoExplorar" type="button">
+
+        <!-- Serve para focar na busca -->
+        <button id="exploreBtn" class="btn-secondary" type="button">
           <i class="fas fa-compass"></i> Explorar
         </button>
       </div>
     </div>
-  </section>
+  </header>
 
   <!--
     Conteúdo principal:
-    Serve para listar trilhas e permitir filtros.
+    Serve para exibir filtros e lista de trilhas (cards).
   -->
-  <main class="conteudo-principal">
+  <main class="main-content">
     <div class="container">
-      <!-- Cabeçalho com filtros -->
-      <div class="cabecalho-categorias">
+      <div class="category-header">
         <h3><i class="fas fa-layer-group"></i> Minhas Trilhas</h3>
 
-        <div class="filtros-categorias">
-          <div class="acoes-categorias">
-            <!-- data-filtro controla qual tipo será exibido -->
-            <button class="botao-filtro ativo" data-filtro="todas" type="button">Todas</button>
-            <button class="botao-filtro" data-filtro="andamento" type="button">Em andamento</button>
-            <button class="botao-filtro" data-filtro="concluidas" type="button">Concluídas</button>
+        <div class="category-filters">
+          <!-- Filtros: servem para mostrar todas / em andamento / concluídas -->
+          <div class="category-actions">
+            <button class="filter-btn active" data-filter="all" type="button">Todas</button>
+            <button class="filter-btn" data-filter="progress" type="button">Em andamento</button>
+            <button class="filter-btn" data-filter="done" type="button">Concluídas</button>
           </div>
 
-          <!-- Contador: serve para mostrar quantas trilhas estão visíveis -->
-          <div class="exibicao-categorias">
-            <span id="contadorTrilhas">0 trilhas</span>
+          <!-- Contador: serve para mostrar quantas trilhas estão na tela -->
+          <div class="category-display">
+            <span id="coursesCount">0 trilhas</span>
           </div>
         </div>
       </div>
 
-      <!-- Container de trilhas: serve como “grade” onde os cards são renderizados -->
-      <div id="containerTrilhas" class="container-trilhas">
-        <!-- As trilhas aparecem aqui via JavaScript -->
-      </div>
+      <!-- Container de cards: serve para renderizar as trilhas via JS -->
+      <section id="coursesContainer" class="courses-container"></section>
     </div>
   </main>
 
-  <!--
-    Modal: Nova Trilha
-    Serve para cadastrar uma trilha com nome, categoria, imagem e cor.
-  -->
-  <div id="modalNovaTrilha" class="modal" aria-hidden="true">
-    <div class="conteudo-modal" role="dialog" aria-label="Nova trilha">
-      <div class="cabecalho-modal">
-        <h3><i class="fas fa-plus-circle"></i> Nova Trilha de Estudos</h3>
-        <button class="botao-fechar-modal" data-fechar-modal="modalNovaTrilha" aria-label="Fechar">&times;</button>
+  <!-- ======================================================
+       MODAL: NOVA TRILHA
+       Serve para cadastrar uma trilha com nome, categoria, imagem e cor.
+       ====================================================== -->
+  <div id="addModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-label="Criar trilha">
+      <div class="modal-header">
+        <h3><i class="fas fa-plus-circle"></i> Nova Trilha</h3>
+        <button class="close-modal" type="button" aria-label="Fechar">&times;</button>
       </div>
 
-      <div class="corpo-modal">
-        <div class="grupo-formulario">
-          <label for="nomeTrilha"><i class="fas fa-heading"></i> Nome da trilha</label>
-          <input id="nomeTrilha" type="text" placeholder="Ex: JavaScript Avançado" />
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="courseName"><i class="fas fa-heading"></i> Nome da trilha</label>
+          <input id="courseName" type="text" placeholder="Ex: JavaScript Moderno" />
         </div>
 
-        <div class="grupo-formulario">
+        <div class="form-group">
           <label><i class="fas fa-tag"></i> Categoria</label>
 
-          <!-- Serve para escolher categoria de forma visual -->
-          <div class="seletor-categoria">
-            <div class="opcao-categoria ativo" data-valor="programacao">
-              <i class="fas fa-code"></i><span>Programação</span>
+          <!-- Seletor visual: serve para escolher categoria clicando -->
+          <div class="category-selector">
+            <div class="category-option active" data-value="programming">
+              <i class="fas fa-code"></i>
+              <span>Programação</span>
             </div>
-            <div class="opcao-categoria" data-valor="design">
-              <i class="fas fa-paint-brush"></i><span>Design</span>
+            <div class="category-option" data-value="design">
+              <i class="fas fa-paint-brush"></i>
+              <span>Design</span>
             </div>
-            <div class="opcao-categoria" data-valor="ciber">
-              <i class="fas fa-shield-alt"></i><span>Cibersegurança</span>
+            <div class="category-option" data-value="cyber">
+              <i class="fas fa-shield-alt"></i>
+              <span>Cibersegurança</span>
             </div>
-            <div class="opcao-categoria" data-valor="qa">
-              <i class="fas fa-vial"></i><span>QA e Testes</span>
+            <div class="category-option" data-value="qa">
+              <i class="fas fa-vial"></i>
+              <span>QA e Testes</span>
             </div>
-            <div class="opcao-categoria" data-valor="dados">
-              <i class="fas fa-chart-bar"></i><span>Ciência de Dados</span>
+            <div class="category-option" data-value="data">
+              <i class="fas fa-chart-bar"></i>
+              <span>Ciência de Dados</span>
             </div>
-            <div class="opcao-categoria" data-valor="outros">
-              <i class="fas fa-ellipsis-h"></i><span>Outros</span>
+            <div class="category-option" data-value="other">
+              <i class="fas fa-ellipsis-h"></i>
+              <span>Outros</span>
             </div>
           </div>
 
-          <!-- Campo oculto: serve para guardar o valor selecionado -->
-          <input type="hidden" id="categoriaTrilha" value="programacao" />
+          <!-- Campo oculto: serve para guardar o valor da categoria selecionada -->
+          <input id="courseCategory" type="hidden" value="programming" />
         </div>
 
-        <div class="grupo-formulario">
-          <label for="imagemTrilha"><i class="fas fa-image"></i> URL da imagem (opcional)</label>
-          <input id="imagemTrilha" type="text" placeholder="https://exemplo.com/imagem.jpg" />
-          <small>Se ficar em branco, será usada uma imagem padrão da categoria</small>
+        <div class="form-group">
+          <label for="courseImage"><i class="fas fa-image"></i> URL da imagem (opcional)</label>
+          <input id="courseImage" type="text" placeholder="https://..." />
+          <small>Se vazio, a trilha usa imagem padrão da categoria</small>
         </div>
 
-        <div class="grupo-formulario">
-          <label for="corTrilha"><i class="fas fa-palette"></i> Cor de destaque</label>
-          <div class="seletor-cor">
-            <input id="corTrilha" type="color" value="#E50914" />
-            <span id="valorCor">#E50914</span>
+        <div class="form-group">
+          <label for="courseColor"><i class="fas fa-palette"></i> Cor de destaque</label>
+          <div class="color-picker">
+            <input id="courseColor" type="color" value="#E50914" />
+            <span id="colorValue">#E50914</span>
           </div>
         </div>
       </div>
 
-      <div class="rodape-modal">
-        <button class="botao-secundario" data-fechar-modal="modalNovaTrilha" type="button">Cancelar</button>
-        <button class="botao-primario" id="botaoSalvarTrilha" type="button">Criar Trilha</button>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal" type="button">Cancelar</button>
+        <button id="saveCourseBtn" class="btn-primary" type="button">Criar Trilha</button>
       </div>
     </div>
   </div>
 
-  <!--
-    Modal: Nova/Editar Aula
-    Serve para cadastrar uma aula (título, link, marcador e status).
-  -->
-  <div id="modalAula" class="modal" aria-hidden="true">
-    <div class="conteudo-modal" role="dialog" aria-label="Cadastro de aula">
-      <div class="cabecalho-modal">
-        <h3 id="tituloModalAula"><i class="fas fa-plus-circle"></i> Nova Videoaula</h3>
-        <button class="botao-fechar-modal" data-fechar-modal="modalAula" aria-label="Fechar">&times;</button>
+  <!-- ======================================================
+       MODAL: NOVA/EDITAR AULA
+       Serve para cadastrar ou editar uma aula dentro de uma trilha.
+       ====================================================== -->
+  <div id="lessonModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-label="Aula">
+      <div class="modal-header">
+        <h3 id="lessonModalTitle"><i class="fas fa-plus-circle"></i> Nova Videoaula</h3>
+        <button class="close-modal" type="button" aria-label="Fechar">&times;</button>
       </div>
 
-      <div class="corpo-modal">
+      <div class="modal-body">
         <!-- Campo oculto: serve para saber se é edição -->
-        <input type="hidden" id="indiceAulaEdicao" value="" />
+        <input id="lessonIndex" type="hidden" value="" />
 
-        <div class="grupo-formulario">
-          <label for="tituloAula"><i class="fas fa-heading"></i> Título da aula</label>
-          <input id="tituloAula" type="text" placeholder="Ex: Introdução ao React" />
+        <div class="form-group">
+          <label for="editLessonTitle"><i class="fas fa-heading"></i> Título da aula</label>
+          <input id="editLessonTitle" type="text" placeholder="Ex: Async/Await" />
         </div>
 
-        <div class="grupo-formulario">
-          <label for="urlAula"><i class="fas fa-link"></i> Link da videoaula</label>
-          <input id="urlAula" type="text" placeholder="https://youtube.com/watch?v=..." />
+        <div class="form-group">
+          <label for="editLessonUrl"><i class="fas fa-link"></i> URL</label>
+          <input id="editLessonUrl" type="text" placeholder="https://youtube.com/..." />
         </div>
 
-        <div class="grupo-formulario">
-          <label for="marcadorAula"><i class="fas fa-bookmark"></i> Onde parei / Nota</label>
-          <input id="marcadorAula" type="text" placeholder="Ex: 15:30 ou 'Capítulo 3 - Arrays'" />
-          <small>Serve para registrar o tempo ou um trecho/nota do conteúdo</small>
+        <div class="form-group">
+          <label for="editLessonTime"><i class="fas fa-bookmark"></i> Onde parei / Nota</label>
+          <input id="editLessonTime" type="text" placeholder="Ex: 15:30 ou 'Capítulo 3 - Arrays'" />
+          <small>Serve para guardar o ponto onde você parou ou uma anotação</small>
         </div>
 
-        <div class="grupo-formulario">
+        <div class="form-group">
           <label><i class="fas fa-tasks"></i> Status</label>
 
-          <!-- Serve para definir se a aula está em andamento ou concluída -->
-          <div class="seletor-status">
-            <div class="opcao-status ativo" data-valor="andamento">
-              <i class="fas fa-play-circle"></i><span>Em andamento</span>
+          <!-- Seletor visual: serve para definir se a aula está em andamento ou concluída -->
+          <div class="status-selector">
+            <div class="status-option active" data-value="progress">
+              <i class="fas fa-play-circle"></i>
+              <span>Em andamento</span>
             </div>
-            <div class="opcao-status" data-valor="concluida">
-              <i class="fas fa-check-circle"></i><span>Concluída</span>
+            <div class="status-option" data-value="done">
+              <i class="fas fa-check-circle"></i>
+              <span>Concluída</span>
             </div>
           </div>
 
-          <!-- Campo oculto: guarda o valor do status -->
-          <input type="hidden" id="statusAula" value="andamento" />
+          <!-- Campo oculto: serve para guardar o valor do status -->
+          <input id="editLessonStatus" type="hidden" value="progress" />
         </div>
       </div>
 
-      <div class="rodape-modal">
-        <button class="botao-secundario" data-fechar-modal="modalAula" type="button">Cancelar</button>
-        <button class="botao-primario" id="botaoSalvarAula" type="button">Salvar Aula</button>
+      <div class="modal-footer">
+        <button class="btn-secondary close-modal" type="button">Cancelar</button>
+        <button id="saveLessonBtn" class="btn-primary" type="button">Salvar</button>
       </div>
     </div>
   </div>
 
-  <!--
-    Modal: Detalhes da Trilha
-    Serve para visualizar progresso, lista de aulas e ações rápidas.
-  -->
-  <div id="modalDetalhesTrilha" class="modal" aria-hidden="true">
-    <div class="conteudo-modal" role="dialog" aria-label="Detalhes da trilha">
-      <div class="cabecalho-modal">
-        <h3 id="tituloDetalhesTrilha"></h3>
-        <button class="botao-fechar-modal" data-fechar-modal="modalDetalhesTrilha" aria-label="Fechar">&times;</button>
+  <!-- ======================================================
+       MODAL: DETALHES DA TRILHA
+       Serve para ver progresso, lista de aulas e ações rápidas.
+       ====================================================== -->
+  <div id="courseDetailsModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-label="Detalhes da trilha">
+      <div class="modal-header">
+        <h3><i class="fas fa-info-circle"></i> <span id="courseDetailsTitle">Detalhes</span></h3>
+        <button class="close-modal" type="button" aria-label="Fechar">&times;</button>
       </div>
 
-      <div class="corpo-modal">
-        <div class="cabecalho-detalhes-trilha">
-          <div class="imagem-detalhes-trilha" id="imagemDetalhesTrilha"></div>
+      <div class="modal-body">
+        <div class="course-details-header">
+          <div id="courseDetailsImage" class="course-details-image"></div>
 
-          <div class="info-detalhes-trilha">
-            <div class="meta-trilha">
-              <span class="badge-categoria" id="badgeCategoria"></span>
-              <span class="texto-progresso" id="textoProgresso"></span>
+          <div class="course-details-info">
+            <div class="course-meta">
+              <span id="courseCategoryBadge" class="course-category"></span>
+              <span id="courseProgressText" class="course-date"></span>
             </div>
 
-            <!-- Barra de progresso: serve para mostrar porcentagem concluída -->
-            <div class="bloco-progresso">
-              <div class="barra-progresso">
-                <div class="preenchimento-progresso" id="preenchimentoProgresso"></div>
+            <div class="course-progress">
+              <div class="progress-bar">
+                <div id="courseProgressFill" class="progress-fill" style="width:0%"></div>
               </div>
 
-              <div class="estatisticas-progresso">
-                <span><i class="fas fa-play-circle"></i> <span id="totalAulas">0</span> aulas</span>
-                <span><i class="fas fa-check-circle"></i> <span id="aulasConcluidas">0</span> concluídas</span>
+              <div class="progress-stats">
+                <span><i class="fas fa-play-circle"></i> <span id="courseTotalLessons">0</span> aulas</span>
+                <span><i class="fas fa-check-circle"></i> <span id="courseCompletedLessons">0</span> concluídas</span>
               </div>
             </div>
 
-            <!-- Ações da trilha -->
-            <div class="acoes-detalhes-trilha">
-              <button class="botao-primario" id="botaoNovaAulaNaTrilha" type="button">
+            <div class="course-actions-details">
+              <button id="addLessonToCourseBtn" class="btn-primary" type="button">
                 <i class="fas fa-plus"></i> Nova Aula
               </button>
 
-              <button class="botao-secundario" id="botaoMarcarTodas" type="button">
+              <button class="btn-secondary" type="button" onclick="markAllAsDone()">
                 <i class="fas fa-check-double"></i> Marcar Todas
               </button>
 
-              <button class="botao-perigo" id="botaoExcluirTrilha" type="button">
+              <button id="deleteCourseBtn" class="btn-danger" type="button">
                 <i class="fas fa-trash"></i> Excluir
               </button>
             </div>
           </div>
         </div>
 
-        <div class="secao-aulas">
-          <h4><i class="fas fa-list"></i> Aulas desta Trilha</h4>
+        <div class="lessons-section">
+          <h4><i class="fas fa-list"></i> Aulas</h4>
 
-          <!-- Lista de aulas (renderizada no JS) -->
-          <div id="listaAulas" class="lista-aulas"></div>
+          <!-- Lista de aulas -->
+          <div id="courseLessonsList" class="lessons-list"></div>
 
-          <!-- Estado vazio: serve para orientar quando não há aulas -->
-          <div class="estado-vazio" id="estadoVazioAulas" style="display:none;">
-            <i class="fas fa-film"></i>
-            <h5>Nenhuma aula encontrada</h5>
-            <p>Adicione sua primeira aula a esta trilha</p>
+          <!-- Estado vazio -->
+          <div id="emptyLessonsState" class="empty-state" style="display:none;">
+            <i class="fas fa-video"></i>
+            <h5>Nenhuma aula ainda</h5>
+            <p>Adicione sua primeira aula para começar.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!--
-    Modal: Confirmação
-    Serve para evitar exclusões acidentais.
-  -->
-  <div id="modalConfirmacao" class="modal" aria-hidden="true">
-    <div class="conteudo-modal" role="dialog" aria-label="Confirmação">
-      <div class="cabecalho-modal">
+  <!-- ======================================================
+       MODAL: CONFIRMAÇÃO
+       Serve para confirmar exclusões e ações críticas.
+       ====================================================== -->
+  <div id="confirmModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-label="Confirmação">
+      <div class="modal-header">
         <h3><i class="fas fa-exclamation-triangle"></i> Confirmação</h3>
-        <button class="botao-fechar-modal" data-fechar-modal="modalConfirmacao" aria-label="Fechar">&times;</button>
+        <button class="close-modal" type="button" aria-label="Fechar">&times;</button>
       </div>
 
-      <div class="corpo-modal">
-        <p id="mensagemConfirmacao">Tem certeza que deseja continuar?</p>
+      <div class="modal-body">
+        <p id="confirmMessage">Tem certeza?</p>
       </div>
 
-      <div class="rodape-modal">
-        <button class="botao-secundario" id="botaoCancelarConfirmacao" type="button">Cancelar</button>
-        <button class="botao-perigo" id="botaoConfirmar" type="button">Confirmar</button>
+      <div class="modal-footer">
+        <button id="confirmCancel" class="btn-secondary" type="button">Cancelar</button>
+        <button id="confirmDelete" class="btn-danger" type="button">Confirmar</button>
       </div>
     </div>
   </div>
 
   <!-- Rodapé -->
-  <footer class="rodape">
+  <footer class="footer">
     <div class="container">
-      <div class="conteudo-rodape">
-        <div class="logo-rodape">
+      <div class="footer-content">
+        <div class="footer-logo">
           <i class="fas fa-graduation-cap"></i>
-          <span>Study<span>Flix</span></span>
+          <span>StudyFlix</span>
         </div>
-        <p>Seu progresso é salvo automaticamente <i class="fas fa-lock"></i></p>
-        <p class="copyright">© 2026 StudyFlix - Aprenda como nas séries</p>
+        <p>Seu progresso fica salvo no navegador <i class="fas fa-lock"></i></p>
+        <div class="footer-copyright">© 2026 StudyFlix</div>
       </div>
     </div>
   </footer>
 
-  <!-- Script do projeto -->
+  <!-- JavaScript do projeto -->
   <script src="script.js"></script>
 </body>
 </html>

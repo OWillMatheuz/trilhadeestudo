@@ -1,1140 +1,1194 @@
 /* =========================================================
-   RESET GLOBAL
-   Serve para padronizar margens/padding e evitar diferenças
-   entre navegadores.
+   RESET E CONFIGURAÇÕES GLOBAIS
+   Serve para padronizar estilos e evitar diferenças entre navegadores
    ========================================================= */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* =========================================================
-   BASE DO SITE
-   Serve para definir fonte, cores e evitar rolagem horizontal.
-   ========================================================= */
+/* Serve para definir fonte, fundo escuro e cor padrão do texto */
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #0f0f0f;
-  color: #ffffff;
-  line-height: 1.6;
-  overflow-x: hidden;
+    font-family: 'Roboto', sans-serif;
+    background-color: #0f0f0f;
+    color: #ffffff;
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
+/* Serve para manter o conteúdo centralizado e com limite de largura */
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 /* =========================================================
-   BARRA DE NAVEGAÇÃO
-   Serve como menu fixo com logo, busca e avatar.
+   NAVEGAÇÃO (TOPO FIXO)
+   Serve para deixar o menu sempre visível com blur e transição
    ========================================================= */
-.barra-navegacao {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  padding: 15px 0;
-  z-index: 1000;
-  transition: all 0.3s;
-  backdrop-filter: blur(10px);
-  background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
+    padding: 15px 0;
+    z-index: 1000;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
 }
 
-/* Serve para dar destaque ao menu quando a página desce */
-.barra-navegacao.rolado {
-  background: rgba(0, 0, 0, 0.95);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+/* Serve para mudar o visual do topo quando o usuário rola a página */
+.navbar.scrolled {
+    background: rgba(0, 0, 0, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.container-navegacao {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 40px;
-  gap: 20px;
+/* Serve para alinhar logo, busca e usuário */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
 }
 
-.logo-navegacao {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 24px;
+/* Serve para alinhar ícone e título da marca */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 24px;
 }
 
-.logo-navegacao i {
-  color: #E50914;
-  font-size: 28px;
+.nav-logo i {
+    color: #E50914;
+    font-size: 28px;
 }
 
-.logo-navegacao h1 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 800;
-  font-size: 28px;
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.nav-logo h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.busca-navegacao {
-  display: flex;
-  align-items: center;
-  width: 400px;
-  padding: 5px 15px;
-  border-radius: 30px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s;
+/* Serve para criar o campo de busca com borda e hover */
+.nav-search {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 5px 15px;
+    width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s;
 }
 
-/* Serve para realçar a busca quando o usuário vai digitar */
-.busca-navegacao:focus-within {
-  border-color: #E50914;
-  background-color: rgba(255, 255, 255, 0.15);
+/* Serve para destacar a busca quando o usuário está digitando */
+.nav-search:focus-within {
+    border-color: #E50914;
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-.busca-navegacao input {
-  background: transparent;
-  border: none;
-  padding: 10px 12px;
-  color: white;
-  width: 100%;
-  font-size: 16px;
-  outline: none;
+.nav-search input {
+    background: transparent;
+    border: none;
+    padding: 10px 12px;
+    color: white;
+    width: 100%;
+    font-size: 16px;
+    outline: none;
 }
 
-.busca-navegacao input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+.nav-search input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
 }
 
-.busca-navegacao button {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  padding: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: color 0.3s;
+/* Serve para o botão da lupa */
+.nav-search button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.3s;
 }
 
-.busca-navegacao button:hover {
-  color: #E50914;
+.nav-search button:hover {
+    color: #E50914;
 }
 
-.usuario-navegacao {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+/* Serve para exibir avatar do usuário */
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
 }
 
-.avatar-usuario {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  transition: transform 0.3s;
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: transform 0.3s;
 }
 
-.avatar-usuario:hover {
-  transform: scale(1.08);
+.user-avatar:hover {
+    transform: scale(1.1);
 }
 
 /* =========================================================
    BANNER HERO
-   Serve para chamar atenção e destacar ações principais.
+   Serve como capa principal com chamada e botões
    ========================================================= */
-.banner-hero {
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4)),
-    url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
-  background-size: cover;
-  background-position: center;
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  margin-bottom: 40px;
-  padding-top: 100px;
-  position: relative;
-  overflow: hidden;
+.hero-banner {
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4)), 
+                url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+    background-size: cover;
+    background-position: center;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-top: 100px;
+    position: relative;
+    overflow: hidden;
 }
 
-.banner-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, rgba(229, 9, 20, 0.1), rgba(255, 107, 107, 0.1));
-  pointer-events: none;
+/* Serve para dar um brilho/gradiente decorativo por cima do banner */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(229, 9, 20, 0.1), rgba(255, 107, 107, 0.1));
+    pointer-events: none;
 }
 
-.conteudo-hero {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 40px;
-  width: 100%;
-  position: relative;
-  z-index: 1;
+.hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
-.conteudo-hero h2 {
-  font-size: 4rem;
-  font-weight: 800;
-  margin-bottom: 20px;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(45deg, #fff, #E50914);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.hero-content h2 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(45deg, #fff, #E50914);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.conteudo-hero p {
-  font-size: 1.8rem;
-  margin-bottom: 40px;
-  color: #d2d2d2;
-  max-width: 600px;
-  font-weight: 300;
+.hero-content p {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+    color: #d2d2d2;
+    max-width: 600px;
+    font-weight: 300;
 }
 
-.botoes-hero {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 /* =========================================================
    BOTÕES
-   Servem para padronizar ações (primário, secundário, perigo).
+   Servem para padronizar ações (primário, secundário, alerta)
    ========================================================= */
-.botao-primario {
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+.btn-primary {
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
 }
 
-.botao-primario:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
 }
 
-.botao-secundario {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 15px 30px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s;
-  backdrop-filter: blur(10px);
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
 }
 
-.botao-secundario:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
 }
 
-.botao-perigo {
-  background: rgba(229, 9, 20, 0.1);
-  color: #E50914;
-  border: 1px solid rgba(229, 9, 20, 0.3);
-  padding: 12px 18px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s;
+.btn-danger {
+    background: rgba(229, 9, 20, 0.1);
+    color: #E50914;
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
 }
 
-.botao-perigo:hover {
-  background: rgba(229, 9, 20, 0.3);
-  transform: translateY(-2px);
+.btn-danger:hover {
+    background: rgba(229, 9, 20, 0.3);
+    transform: translateY(-2px);
 }
 
-.botao-pequeno {
-  padding: 10px 14px;
-  font-size: 13px;
+.btn-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-warning:hover {
+    background: rgba(245, 158, 11, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
 }
 
 /* =========================================================
-   CONTEÚDO PRINCIPAL + FILTROS
-   Servem para organizar a área de trilhas.
+   CONTEÚDO PRINCIPAL
+   Serve para separar visualmente filtros e cards
    ========================================================= */
-.conteudo-principal {
-  padding-bottom: 60px;
+.main-content {
+    padding-bottom: 60px;
 }
 
-.cabecalho-categorias {
-  margin-bottom: 30px;
-  padding: 0 20px;
+.category-header {
+    margin-bottom: 30px;
+    padding: 0 20px;
 }
 
-.cabecalho-categorias h3 {
-  font-size: 2rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+.category-header h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: #fff;
 }
 
-.cabecalho-categorias h3 i {
-  color: #E50914;
+.category-header h3 i {
+    color: #E50914;
 }
 
-.filtros-categorias {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+.category-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.acoes-categorias {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.category-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.botao-filtro {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s;
+.filter-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.botao-filtro.ativo,
-.botao-filtro:hover {
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+.filter-btn.active, .filter-btn:hover {
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
 }
 
-.exibicao-categorias {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 14px;
-  font-weight: 700;
+.category-display {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 500;
 }
 
 /* =========================================================
-   GRID DE TRILHAS
-   Serve para exibir cards de trilhas em colunas.
+   GRID DE CURSOS (TRILHAS)
+   Serve para organizar cards em colunas responsivas
    ========================================================= */
-.container-trilhas {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
-  padding: 0 20px;
+.courses-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 0 20px;
 }
 
 /* =========================================================
-   CARD DA TRILHA
-   Serve para mostrar categoria, progresso e ações rápidas.
+   CARD DO CURSO (TRILHA)
+   Serve para exibir imagem, categoria, progresso e botões
    ========================================================= */
-.card-trilha {
-  background: linear-gradient(145deg, #1a1a1a, #141414);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s;
-  position: relative;
-  height: 420px;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.course-card {
+    background: linear-gradient(145deg, #1a1a1a, #141414);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card-trilha:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  border-color: rgba(229, 9, 20, 0.3);
+.course-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border-color: rgba(229, 9, 20, 0.3);
 }
 
-.imagem-trilha {
-  height: 180px;
-  width: 100%;
-  background-size: cover;
-  background-position: center;
-  position: relative;
+.course-image {
+    height: 180px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.imagem-trilha::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 100%);
+.course-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 100%);
 }
 
-.sobreposicao-trilha {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 20px;
-  z-index: 2;
+.course-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    z-index: 2;
 }
 
-.badge-categoria-card {
-  background: rgba(229, 9, 20, 0.9);
-  color: white;
-  padding: 6px 15px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(10px);
+.course-category {
+    background: rgba(229, 9, 20, 0.9);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
 }
 
-.conteudo-trilha {
-  padding: 25px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(to top, #1a1a1a, transparent);
+.course-content {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to top, #1a1a1a, transparent);
 }
 
-.titulo-trilha {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin-bottom: 15px;
-  line-height: 1.3;
+.course-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.3;
+    color: #fff;
+
+    /* Serve para limitar o título em múltiplas linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Serve para cortar em 2 linhas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.bloco-progresso-card {
-  margin-bottom: 20px;
+.course-progress {
+    margin-bottom: 20px;
 }
 
-.barra-progresso {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  margin-bottom: 12px;
-  overflow: hidden;
+.progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    position: relative;
 }
 
-.preenchimento-progresso {
-  height: 100%;
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  border-radius: 3px;
-  transition: width 0.4s;
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-.texto-progresso-card {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 700;
+/* Serve para criar efeito de brilho se movendo na barra */
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
 }
 
-.estatisticas-trilha {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 700;
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
-.estatisticas-trilha span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.progress-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
 }
 
-.acoes-trilha-card {
-  display: flex;
-  gap: 10px;
-  margin-top: auto;
+.course-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-.acoes-trilha-card button {
-  flex: 1;
-  padding: 12px;
-  font-size: 14px;
-  border-radius: 8px;
-  justify-content: center;
+.course-stats span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.course-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.course-actions button {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
 }
 
 /* =========================================================
-   MODAL
-   Serve para exibir janelas sobrepostas (cadastro e detalhes).
+   MODAIS
+   Serve para exibir telas sobrepostas para formulários e detalhes
    ========================================================= */
 .modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.95);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(10px);
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    animation: modalFadeIn 0.3s ease-out;
 }
 
-.modal.ativo {
-  display: flex;
+@keyframes modalFadeIn {
+    from { opacity: 0; backdrop-filter: blur(0); }
+    to   { opacity: 1; backdrop-filter: blur(10px); }
 }
 
-.conteudo-modal {
-  background: linear-gradient(145deg, #1a1a1a, #141414);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+.modal.active { display: flex; }
+
+.modal-content {
+    background: linear-gradient(145deg, #1a1a1a, #141414);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cabecalho-modal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: sticky;
-  top: 0;
-  background: linear-gradient(to bottom, #1a1a1a, transparent);
-  z-index: 2;
-  backdrop-filter: blur(10px);
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(50px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.cabecalho-modal h3 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    background: linear-gradient(to bottom, #1a1a1a, transparent);
+    z-index: 1;
+    backdrop-filter: blur(10px);
 }
 
-.cabecalho-modal h3 i {
-  color: #E50914;
+.modal-header h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
 }
 
-.botao-fechar-modal {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  transition: all 0.3s;
+.modal-header h3 i { color: #E50914; }
+
+.close-modal {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
 }
 
-.botao-fechar-modal:hover {
-  background: rgba(229, 9, 20, 0.2);
-  color: #E50914;
-  transform: rotate(90deg);
+.close-modal:hover {
+    background: rgba(229, 9, 20, 0.2);
+    color: #E50914;
+    transform: rotate(90deg);
 }
 
-.corpo-modal {
-  padding: 25px;
-}
+.modal-body { padding: 25px; }
 
-.rodape-modal {
-  padding: 25px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  background: linear-gradient(to top, #1a1a1a, transparent);
+.modal-footer {
+    padding: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    background: linear-gradient(to top, #1a1a1a, transparent);
 }
 
 /* =========================================================
    FORMULÁRIOS
-   Servem para padronizar inputs e labels.
+   Servem para inputs consistentes e foco com destaque
    ========================================================= */
-.grupo-formulario {
-  margin-bottom: 25px;
+.form-group { margin-bottom: 25px; }
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
 }
 
-.grupo-formulario label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.9);
+.form-group label i { color: #E50914; }
+
+.form-group input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s;
 }
 
-.grupo-formulario label i {
-  color: #E50914;
+.form-group input:focus {
+    outline: none;
+    border-color: #E50914;
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+    background: rgba(255, 255, 255, 0.08);
 }
 
-.grupo-formulario input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 15px;
-  color: white;
-  font-size: 16px;
-  transition: all 0.3s;
-}
-
-.grupo-formulario input:focus {
-  outline: none;
-  border-color: #E50914;
-  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.grupo-formulario small {
-  display: block;
-  margin-top: 8px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
+.form-group small {
+    display: block;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
 }
 
 /* =========================================================
    SELETOR DE CATEGORIA
-   Serve para escolher a categoria por cards clicáveis.
+   Serve para escolher categoria de forma visual
    ========================================================= */
-.seletor-categoria {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-top: 10px;
+.category-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
 }
 
-.opcao-categoria {
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-align: center;
-  font-weight: 700;
+.category-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
 }
 
-.opcao-categoria:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-3px);
+.category-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
 }
 
-.opcao-categoria.ativo {
-  background: rgba(229, 9, 20, 0.15);
-  border-color: #E50914;
-  box-shadow: 0 5px 15px rgba(229, 9, 20, 0.2);
+.category-option.active {
+    background: rgba(229, 9, 20, 0.15);
+    border-color: #E50914;
+    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.2);
 }
 
-.opcao-categoria i {
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.7);
+.category-option i {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s;
 }
 
-.opcao-categoria.ativo i {
-  color: #E50914;
+.category-option.active i { color: #E50914; }
+
+.category-option span {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* =========================================================
    SELETOR DE STATUS
-   Serve para definir status da aula de forma visual.
+   Serve para escolher andamento ou concluído
    ========================================================= */
-.seletor-status {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
+.status-selector {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
 }
 
-.opcao-status {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 800;
+.status-option {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.opcao-status:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.opcao-status.ativo {
-  border-color: #E50914;
-}
-
-.opcao-status[data-valor="andamento"] i {
-  color: #f59e0b;
-  font-size: 24px;
-}
-
-.opcao-status[data-valor="concluida"] i {
-  color: #22c55e;
-  font-size: 24px;
-}
+.status-option:hover { background: rgba(255, 255, 255, 0.1); }
+.status-option.active { border-color: #E50914; }
+.status-option i { font-size: 24px; }
+.status-option[data-value="progress"] i { color: #f59e0b; }
+.status-option[data-value="done"] i { color: #22c55e; }
 
 /* =========================================================
    SELETOR DE COR
-   Serve para escolher cor e exibir o valor HEX.
+   Serve para escolher cor e mostrar valor em texto
    ========================================================= */
-.seletor-cor {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-top: 10px;
+.color-picker {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
 }
 
-.seletor-cor input[type="color"] {
-  width: 60px;
-  height: 60px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  padding: 0;
+.color-picker input[type="color"] {
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
 }
 
-#valorCor {
-  font-family: monospace;
-  font-size: 16px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.8);
-  padding: 10px 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.color-picker input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.color-picker input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 8px;
+}
+
+#colorValue {
+    font-family: monospace;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* =========================================================
-   DETALHES DA TRILHA (MODAL)
-   Serve para mostrar imagem, progresso e ações.
+   DETALHES DO CURSO NO MODAL
+   Serve para exibir imagem, meta e botões do curso
    ========================================================= */
-.cabecalho-detalhes-trilha {
-  display: flex;
-  gap: 30px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
+.course-details-header {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
 }
 
-.imagem-detalhes-trilha {
-  width: 300px;
-  height: 180px;
-  border-radius: 16px;
-  background-size: cover;
-  background-position: center;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
+.course-details-image {
+    width: 300px;
+    height: 180px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
 }
 
-.imagem-detalhes-trilha::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, rgba(0,0,0,0.6), transparent);
+.course-details-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(0,0,0,0.6), transparent);
+    border-radius: 16px;
 }
 
-.info-detalhes-trilha {
-  flex: 1;
-  min-width: 300px;
+.course-details-info { flex: 1; min-width: 300px; }
+
+.course-meta {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-.meta-trilha {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+.course-date {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.badge-categoria {
-  background: rgba(229, 9, 20, 0.9);
-  padding: 6px 14px;
-  border-radius: 18px;
-  font-weight: 900;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+.progress-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
-.texto-progresso {
-  color: rgba(255,255,255,0.65);
-  font-weight: 800;
-  font-size: 14px;
+.progress-stats span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 15px;
+    font-weight: 500;
 }
 
-.bloco-progresso {
-  margin-bottom: 30px;
-}
+.progress-stats i { color: #E50914; }
 
-.estatisticas-progresso {
-  display: flex;
-  gap: 30px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-  font-weight: 800;
-  color: rgba(255,255,255,0.85);
-}
-
-.estatisticas-progresso i {
-  color: #E50914;
-}
-
-.acoes-detalhes-trilha {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+.course-actions-details {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 /* =========================================================
-   LISTA DE AULAS
-   Serve para exibir cada aula com status e ações.
+   LISTA DE AULAS (MODAL)
+   Serve para exibir aulas, status, link e ações
    ========================================================= */
-.secao-aulas h4 {
-  font-size: 1.5rem;
-  margin-bottom: 25px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-weight: 900;
+.lessons-section { margin-top: 40px; }
+
+.lessons-section h4 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
 }
 
-.secao-aulas h4 i {
-  color: #E50914;
+.lessons-section h4 i { color: #E50914; }
+
+.lessons-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 25px;
+    padding-right: 10px;
 }
 
-.lista-aulas {
-  max-height: 400px;
-  overflow-y: auto;
-  margin-bottom: 25px;
-  padding-right: 10px;
+.lesson-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: all 0.3s;
+    flex-wrap: wrap;
+    backdrop-filter: blur(10px);
 }
 
-.item-aula {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 15px;
-  transition: all 0.3s;
-  flex-wrap: wrap;
+.lesson-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
 }
 
-.item-aula:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
+.lesson-info { flex: 1; min-width: 300px; }
+
+.lesson-title {
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 16px;
 }
 
-.info-aula {
-  flex: 1;
-  min-width: 280px;
+.lesson-status {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.titulo-aula {
-  font-weight: 900;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+.status-progress {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.status-aula {
-  font-size: 12px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.status-done {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
-.status-andamento {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+.lesson-url {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
+    display: block;
+    text-decoration: none;
+    transition: color 0.3s;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.status-concluida {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+.lesson-url:hover { color: #E50914; }
+
+.lesson-timestamp {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
-.link-aula {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-top: 8px;
-  text-decoration: none;
-  transition: color 0.3s;
-  word-break: break-all;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
+/* Serve para exibir o marcador “onde parei” como um chip clicável */
+.timestamp-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 300px;
+    word-break: break-word;
+    cursor: pointer;
 }
 
-.link-aula:hover {
-  color: #E50914;
+/* Serve para exibir input e botões quando o marcador está em edição */
+.timestamp-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 420px;
 }
 
-/* Marcador: serve para mostrar/editar onde o aluno parou */
-.bloco-marcador {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 15px;
-  flex-wrap: wrap;
+.timestamp-input input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 13px;
+    flex: 1;
+    transition: all 0.3s;
 }
 
-.marcador-exibicao {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  max-width: 320px;
-  word-break: break-word;
-  cursor: pointer;
-  font-weight: 700;
+.timestamp-input input:focus {
+    border-color: #E50914;
+    background: rgba(255, 255, 255, 0.08);
+    outline: none;
 }
 
-.marcador-exibicao i {
-  color: #E50914;
-  font-size: 12px;
+.timestamp-input button {
+    background: rgba(229, 9, 20, 0.1);
+    color: #E50914;
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-.marcador-edicao {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  max-width: 360px;
+.timestamp-input button:hover {
+    background: rgba(229, 9, 20, 0.3);
 }
 
-.marcador-edicao input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 8px 12px;
-  color: white;
-  font-size: 13px;
-  flex: 1;
+.lesson-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: 15px;
+    flex-wrap: wrap;
 }
 
-.marcador-edicao input:focus {
-  outline: none;
-  border-color: #E50914;
-  background: rgba(255, 255, 255, 0.08);
+/* Estado vazio: serve para orientar quando não há itens */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.5);
 }
 
-.marcador-edicao button {
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 900;
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.2);
 }
 
-.marcador-edicao .botao-salvar {
-  background: rgba(229, 9, 20, 0.1);
-  color: #E50914;
-  border: 1px solid rgba(229, 9, 20, 0.3);
+.empty-state h5 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-.marcador-edicao .botao-salvar:hover {
-  background: rgba(229, 9, 20, 0.3);
-}
-
-.marcador-edicao .botao-cancelar {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.8);
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.acoes-aula {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.estado-vazio {
-  text-align: center;
-  padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.estado-vazio i {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  color: rgba(255, 255, 255, 0.2);
-}
-
-.estado-vazio h5 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 900;
-}
-
-.estado-vazio p {
-  font-size: 1rem;
-  max-width: 400px;
-  margin: 0 auto;
+.empty-state p {
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 /* =========================================================
    RODAPÉ
-   Serve para identidade e mensagens finais.
+   Serve para finalizar a página com identidade visual
    ========================================================= */
-.rodape {
-  background: linear-gradient(to top, #0a0a0a, transparent);
-  padding: 60px 0 40px;
-  margin-top: 60px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+.footer {
+    background: linear-gradient(to top, #0a0a0a, transparent);
+    padding: 60px 0 40px;
+    margin-top: 60px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.conteudo-rodape {
-  text-align: center;
+.footer-content { text-align: center; }
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 28px;
+    margin-bottom: 25px;
 }
 
-.logo-rodape {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  font-size: 28px;
-  margin-bottom: 25px;
+.footer-logo i {
+    color: #E50914;
+    font-size: 32px;
 }
 
-.logo-rodape i {
-  color: #E50914;
-  font-size: 32px;
+.footer-logo span {
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.logo-rodape span {
-  font-weight: 900;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.footer p {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 15px;
+    font-size: 16px;
 }
 
-.rodape p {
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 15px;
-  font-size: 16px;
-  font-weight: 700;
-}
+.footer p i { color: #E50914; margin-left: 5px; }
 
-.rodape p i {
-  color: #E50914;
-  margin-left: 5px;
-}
-
-.copyright {
-  margin-top: 40px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.4);
+.footer-copyright {
+    margin-top: 40px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
 }
 
 /* =========================================================
    SCROLLBAR
-   Serve para personalizar a barra de rolagem.
+   Serve para personalizar a barra de rolagem
    ========================================================= */
 ::-webkit-scrollbar { width: 12px; }
-::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 6px; }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #E50914, #ff6b6b);
-  border-radius: 6px;
-  border: 3px solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
 }
-::-webkit-scrollbar-thumb:hover { background: linear-gradient(45deg, #ff6b6b, #E50914); }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #E50914, #ff6b6b);
+    border-radius: 6px;
+    border: 3px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #ff6b6b, #E50914);
+}
 
 /* =========================================================
    RESPONSIVIDADE
-   Serve para adaptar layout em telas menores.
+   Serve para adaptar o layout em telas menores
    ========================================================= */
 @media (max-width: 1200px) {
-  .conteudo-hero h2 { font-size: 3.2rem; }
-  .busca-navegacao { width: 300px; }
+    .hero-content h2 { font-size: 3.2rem; }
+    .nav-search { width: 300px; }
 }
 
 @media (max-width: 992px) {
-  .conteudo-hero h2 { font-size: 2.8rem; }
-  .conteudo-hero p { font-size: 1.4rem; }
-  .container-trilhas { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-  .cabecalho-detalhes-trilha { flex-direction: column; }
-  .imagem-detalhes-trilha { width: 100%; height: 200px; }
-  .seletor-categoria { grid-template-columns: repeat(2, 1fr); }
+    .hero-content h2 { font-size: 2.8rem; }
+    .hero-content p { font-size: 1.4rem; }
+    .courses-container { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+    .course-details-header { flex-direction: column; }
+    .course-details-image { width: 100%; height: 200px; }
+    .category-selector { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  .container-navegacao { padding: 0 20px; flex-wrap: wrap; }
-  .busca-navegacao { width: 100%; order: 3; }
-  .banner-hero { height: 60vh; padding-top: 120px; }
-  .conteudo-hero h2 { font-size: 2.2rem; }
-  .conteudo-hero p { font-size: 1.2rem; }
-  .filtros-categorias { flex-direction: column; align-items: flex-start; }
-  .item-aula { flex-direction: column; }
-  .acoes-detalhes-trilha { flex-direction: column; }
-  .acoes-detalhes-trilha button { width: 100%; }
+    .nav-container { padding: 0 20px; flex-wrap: wrap; gap: 15px; }
+    .nav-search { order: 3; width: 100%; margin-top: 0; }
+    .hero-banner { height: 60vh; padding-top: 120px; }
+    .hero-content h2 { font-size: 2.2rem; }
+    .hero-content p { font-size: 1.2rem; }
+    .category-header { padding: 0 10px; }
+    .category-filters { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .modal-content { max-height: 95vh; border-radius: 12px; }
+    .lesson-item { flex-direction: column; gap: 20px; }
+    .lesson-actions { margin-left: 0; width: 100%; justify-content: stretch; }
+    .lesson-actions button { flex: 1; }
+    .lesson-info { min-width: 100%; }
+    .course-actions-details { flex-direction: column; }
+    .course-actions-details button { width: 100%; }
 }
 
 @media (max-width: 576px) {
-  .banner-hero { height: 50vh; }
-  .conteudo-hero h2 { font-size: 1.8rem; }
-  .conteudo-hero p { font-size: 1rem; }
-  .botoes-hero { flex-direction: column; }
-  .container-trilhas { grid-template-columns: 1fr; gap: 20px; padding: 0 10px; }
-  .acoes-trilha-card { flex-direction: column; }
-  .conteudo-modal { border-radius: 0; max-height: 100vh; height: 100vh; }
-  .seletor-categoria { grid-template-columns: 1fr; }
-  .seletor-status { flex-direction: column; }
-  .rodape-modal { flex-direction: column; }
-  .rodape-modal button { width: 100%; }
+    .hero-banner { height: 50vh; }
+    .hero-content h2 { font-size: 1.8rem; }
+    .hero-content p { font-size: 1rem; }
+    .hero-buttons { flex-direction: column; }
+    .courses-container { grid-template-columns: 1fr; gap: 20px; padding: 0 10px; }
+    .course-card { height: 400px; }
+    .course-actions { flex-direction: column; }
+    .modal-content { margin: 0; border-radius: 0; max-height: 100vh; height: 100vh; }
+    .modal-header, .modal-body, .modal-footer { padding: 20px; }
+    .category-selector { grid-template-columns: 1fr; }
+    .status-selector { flex-direction: column; }
+    .modal-footer { flex-direction: column; }
+    .modal-footer button { width: 100%; }
 }

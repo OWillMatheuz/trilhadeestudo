@@ -1,629 +1,647 @@
 /* =========================================================
-   ARMAZENAMENTO LOCAL
-   Serve para guardar trilhas e aulas no navegador do usuário,
-   mantendo o progresso mesmo ao fechar a página.
+   CONFIGURAÇÕES / CONSTANTES
+   Servem para guardar chaves e padrões do app
    ========================================================= */
-const CHAVE_STORAGE = 'studyflix-dados-pt-v1';
+const CHAVE_STORAGE = 'studyflix-data-v7';
 
-/* =========================================================
-   IMAGENS PADRÃO
-   Servem para preencher automaticamente a imagem da trilha
-   quando o usuário não informar uma URL.
-   ========================================================= */
 const IMAGEM_PADRAO =
   'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
 
 const IMAGENS_CATEGORIA = {
-  programacao:
-    'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-  design:
-    'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-  ciber:
-    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-  qa:
-    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-  dados:
-    'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-  outros: IMAGEM_PADRAO
+  programming: 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+  design: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+  cyber: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+  qa: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+  data: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+  other: IMAGEM_PADRAO
 };
 
 const NOMES_CATEGORIA = {
-  programacao: 'Programação',
+  programming: 'Programação',
   design: 'Design',
-  ciber: 'Cibersegurança',
+  cyber: 'Cibersegurança',
   qa: 'QA e Testes',
-  dados: 'Ciência de Dados',
-  outros: 'Outros'
+  data: 'Ciência de Dados',
+  other: 'Outros'
 };
 
 const ICONES_CATEGORIA = {
-  programacao: 'fa-code',
+  programming: 'fa-code',
   design: 'fa-paint-brush',
-  ciber: 'fa-shield-alt',
+  cyber: 'fa-shield-alt',
   qa: 'fa-vial',
-  dados: 'fa-chart-bar',
-  outros: 'fa-ellipsis-h'
+  data: 'fa-chart-bar',
+  other: 'fa-ellipsis-h'
 };
 
 /* =========================================================
    DADOS INICIAIS
-   Servem para o app iniciar com exemplos na primeira vez.
+   Servem para preencher exemplos na primeira execução
    ========================================================= */
 const dadosPadrao = [
   {
-    id: 'trilha-js',
-    nome: 'JavaScript Moderno',
-    categoria: 'programacao',
-    imagem: IMAGENS_CATEGORIA.programacao,
-    cor: '#F0DB4F',
-    criadoEm: new Date().toISOString(),
-    aulas: [
+    id: 'js',
+    name: 'JavaScript Moderno',
+    category: 'programming',
+    image: IMAGENS_CATEGORIA.programming,
+    color: '#F0DB4F',
+    createdAt: new Date().toISOString(),
+    links: [
       {
-        id: 'aula-1',
-        titulo: 'Introdução ao ES6+',
+        id: 'lesson-1',
+        title: 'Introdução ao ES6+',
         url: 'https://youtube.com/watch?v=example1',
-        status: 'concluida',
-        marcador: '15:30 - Conceitos básicos de ES6'
+        status: 'done',
+        time: '15:30 - Conceitos básicos de ES6'
       },
       {
-        id: 'aula-2',
-        titulo: 'Async/Await e Promises',
+        id: 'lesson-2',
+        title: 'Async/Await e Promises',
         url: 'https://youtube.com/watch?v=example2',
-        status: 'andamento',
-        marcador: '22:10 - Trabalhando com async/await'
+        status: 'progress',
+        time: '22:10 - Trabalhando com async/await'
       }
     ]
   }
 ];
 
 /* =========================================================
-   ESTADO DA APLICAÇÃO
-   Serve para controlar trilha selecionada, filtros e edição.
+   DADOS DO APP
+   Servem para manter as trilhas carregadas do navegador
    ========================================================= */
-let trilhas = carregarDoStorage();
-let idTrilhaAtual = null;              // trilha aberta no modal de detalhes
-let indiceAulaAtual = null;            // aula em edição (se existir)
-let filtroAtivo = 'todas';             // todas | andamento | concluidas
-let termoBusca = '';                   // texto digitado na busca
-let callbackConfirmacao = null;        // ação confirmada no modal
-let edicaoMarcador = null;             // { idTrilha, idAula } para editar “onde parei”
+let data = JSON.parse(localStorage.getItem(CHAVE_STORAGE)) || dadosPadrao;
+
+/* =========================================================
+   ESTADO DA INTERFACE
+   Serve para controlar o que está aberto/filtrado/editando
+   ========================================================= */
+let currentCourseId = null;
+let currentLessonIndex = null;
+let activeFilter = 'all';
+let currentSearchTerm = '';
+let confirmCallback = null;
+
+/* Serve para saber se o usuário está editando um “onde parei” específico */
+let editingTimestamp = null;
 
 /* =========================================================
    INICIALIZAÇÃO
-   Serve para ligar os eventos e renderizar a interface.
+   Serve para preparar eventos e renderizar o conteúdo inicial
    ========================================================= */
-document.addEventListener('DOMContentLoaded', () => {
-  configurarEventos();
-  renderizarTrilhas();
-  atualizarContadorTrilhas();
-  configurarBarraRolagem();
+document.addEventListener('DOMContentLoaded', function () {
+  initializeApp();
+  setupEventListeners();
+  renderCourses();
+  updateCoursesCount();
 });
 
 /* =========================================================
-   EVENTOS GERAIS
-   Servem para interações de botões, filtros e modais.
+   FUNÇÕES GERAIS DO APP
    ========================================================= */
-function configurarEventos() {
-  // Botões do banner
-  document.getElementById('botaoNovaTrilha').addEventListener('click', () => abrirModal('modalNovaTrilha'));
-  document.getElementById('botaoExplorar').addEventListener('click', () => document.getElementById('entradaBusca').focus());
-
-  // Busca
-  document.getElementById('entradaBusca').addEventListener('input', (e) => {
-    termoBusca = e.target.value.toLowerCase().trim();
-    renderizarTrilhas();
-    atualizarContadorTrilhas();
-  });
-  document.getElementById('botaoBusca').addEventListener('click', () => {
-    termoBusca = document.getElementById('entradaBusca').value.toLowerCase().trim();
-    renderizarTrilhas();
-    atualizarContadorTrilhas();
+function initializeApp() {
+  /* Serve para alterar o topo quando rola a página */
+  window.addEventListener('scroll', function () {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
   });
 
-  // Filtros
-  document.querySelectorAll('.botao-filtro').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.botao-filtro').forEach((b) => b.classList.remove('ativo'));
-      btn.classList.add('ativo');
-      filtroAtivo = btn.dataset.filtro;
-      renderizarTrilhas();
-      atualizarContadorTrilhas();
+  /* Serve para fechar modal ao clicar fora do conteúdo */
+  document.addEventListener('click', function (e) {
+    const modals = document.querySelectorAll('.modal.active');
+    modals.forEach(modal => {
+      if (e.target === modal) closeModal(modal.id);
     });
   });
 
-  // Seletor de categoria (modal nova trilha)
-  document.querySelectorAll('.opcao-categoria').forEach((op) => {
-    op.addEventListener('click', () => {
-      document.querySelectorAll('.opcao-categoria').forEach((o) => o.classList.remove('ativo'));
-      op.classList.add('ativo');
-      document.getElementById('categoriaTrilha').value = op.dataset.valor;
-    });
-  });
-
-  // Seletor de status (modal aula)
-  document.querySelectorAll('.opcao-status').forEach((op) => {
-    op.addEventListener('click', () => {
-      document.querySelectorAll('.opcao-status').forEach((o) => o.classList.remove('ativo'));
-      op.classList.add('ativo');
-      document.getElementById('statusAula').value = op.dataset.valor;
-    });
-  });
-
-  // Cor (modal nova trilha)
-  document.getElementById('corTrilha').addEventListener('input', (e) => {
-    document.getElementById('valorCor').textContent = e.target.value;
-  });
-
-  // Salvar trilha
-  document.getElementById('botaoSalvarTrilha').addEventListener('click', salvarNovaTrilha);
-
-  // Salvar aula
-  document.getElementById('botaoSalvarAula').addEventListener('click', salvarAula);
-
-  // Fechar modais (botões X e Cancelar com data-fechar-modal)
-  document.querySelectorAll('[data-fechar-modal]').forEach((btn) => {
-    btn.addEventListener('click', () => fecharModal(btn.dataset.fecharModal));
-  });
-
-  // Fechar modal clicando fora (overlay)
-  document.querySelectorAll('.modal').forEach((modal) => {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) fecharModal(modal.id);
-    });
-  });
-
-  // Fechar com ESC
-  document.addEventListener('keydown', (e) => {
+  /* Serve para fechar modal com tecla ESC */
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      const modalAtivo = document.querySelector('.modal.ativo');
-      if (modalAtivo) fecharModal(modalAtivo.id);
+      const activeModal = document.querySelector('.modal.active');
+      if (activeModal) closeModal(activeModal.id);
     }
   });
-
-  // Modal confirmação
-  document.getElementById('botaoCancelarConfirmacao').addEventListener('click', () => fecharModal('modalConfirmacao'));
-  document.getElementById('botaoConfirmar').addEventListener('click', () => {
-    if (typeof callbackConfirmacao === 'function') callbackConfirmacao();
-    callbackConfirmacao = null;
-    fecharModal('modalConfirmacao');
-  });
-
-  // Botões do modal detalhes
-  document.getElementById('botaoNovaAulaNaTrilha').addEventListener('click', () => abrirModalAula(idTrilhaAtual));
-  document.getElementById('botaoMarcarTodas').addEventListener('click', marcarTodasConcluidas);
-  document.getElementById('botaoExcluirTrilha').addEventListener('click', () => {
-    if (!idTrilhaAtual) return;
-    mostrarConfirmacao('Tem certeza que deseja excluir esta trilha e todas as aulas?', () => {
-      excluirTrilha(idTrilhaAtual);
-      fecharModal('modalDetalhesTrilha');
-    });
-  });
-
-  // Delegação de eventos (cards e aulas são criados dinamicamente)
-  document.getElementById('containerTrilhas').addEventListener('click', tratarCliqueTrilha);
-  document.getElementById('listaAulas').addEventListener('click', tratarCliqueAula);
 }
 
 /* =========================================================
-   BARRA ROLAGEM (NAVBAR)
-   Serve para realçar o menu ao rolar a página.
+   EVENTOS DE BOTÕES / AÇÕES
    ========================================================= */
-function configurarBarraRolagem() {
-  const barra = document.getElementById('barraNavegacao');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) barra.classList.add('rolado');
-    else barra.classList.remove('rolado');
+function setupEventListeners() {
+  document.getElementById('addCourseBtn').addEventListener('click', () => openModal('addModal'));
+
+  document.getElementById('exploreBtn').addEventListener('click', () => {
+    document.getElementById('searchInput').focus();
+  });
+
+  document.getElementById('saveCourseBtn').addEventListener('click', saveNewCourse);
+
+  document.getElementById('saveLessonBtn').addEventListener('click', saveLesson);
+
+  document.getElementById('addLessonToCourseBtn').addEventListener('click', () => {
+    if (currentCourseId) openLessonModal(currentCourseId, null, null);
+  });
+
+  document.getElementById('deleteCourseBtn').addEventListener('click', () => {
+    if (!currentCourseId) return;
+    showConfirm('Tem certeza que deseja excluir esta trilha e todas as suas aulas?', () => {
+      deleteCourse(currentCourseId);
+      closeModal('courseDetailsModal');
+    });
+  });
+
+  document.getElementById('confirmCancel').addEventListener('click', () => closeModal('confirmModal'));
+  document.getElementById('confirmDelete').addEventListener('click', () => {
+    if (confirmCallback) confirmCallback();
+    confirmCallback = null;
+    closeModal('confirmModal');
+  });
+
+  /* Serve para selecionar categoria visualmente */
+  document.querySelectorAll('.category-option').forEach(option => {
+    option.addEventListener('click', function () {
+      document.querySelectorAll('.category-option').forEach(opt => opt.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('courseCategory').value = this.dataset.value;
+    });
+  });
+
+  /* Serve para selecionar status visualmente */
+  document.querySelectorAll('.status-option').forEach(option => {
+    option.addEventListener('click', function () {
+      document.querySelectorAll('.status-option').forEach(opt => opt.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('editLessonStatus').value = this.dataset.value;
+    });
+  });
+
+  /* Serve para mostrar o valor da cor */
+  document.getElementById('courseColor').addEventListener('input', function () {
+    document.getElementById('colorValue').textContent = this.value;
+  });
+
+  /* Serve para fechar modais pelo botão X */
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const modal = this.closest('.modal');
+      if (modal) closeModal(modal.id);
+    });
+  });
+
+  /* Filtros */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      activeFilter = this.dataset.filter;
+      renderCourses();
+      updateCoursesCount();
+    });
+  });
+
+  /* Busca em tempo real */
+  document.getElementById('searchInput').addEventListener('input', function () {
+    currentSearchTerm = this.value.toLowerCase().trim();
+    renderCourses();
+    updateCoursesCount();
+  });
+
+  document.getElementById('searchBtn').addEventListener('click', function () {
+    currentSearchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    renderCourses();
+    updateCoursesCount();
   });
 }
 
 /* =========================================================
    MODAIS
-   Servem para mostrar/ocultar janelas e travar rolagem do body.
+   Servem para abrir/fechar e limpar estados
    ========================================================= */
-function abrirModal(idModal) {
-  const modal = document.getElementById(idModal);
-  modal.classList.add('ativo');
-  modal.setAttribute('aria-hidden', 'false');
+function openModal(modalId) {
+  document.getElementById(modalId).classList.add('active');
   document.body.style.overflow = 'hidden';
 
-  // Serve para facilitar o usuário começar a digitar rapidamente
-  if (idModal === 'modalNovaTrilha') setTimeout(() => document.getElementById('nomeTrilha').focus(), 100);
-  if (idModal === 'modalAula') setTimeout(() => document.getElementById('tituloAula').focus(), 100);
+  /* Serve para focar no primeiro campo do modal */
+  if (modalId === 'lessonModal') {
+    setTimeout(() => document.getElementById('editLessonTitle').focus(), 100);
+  } else if (modalId === 'addModal') {
+    setTimeout(() => document.getElementById('courseName').focus(), 100);
+
+    /* Serve para resetar o seletor visual de categoria */
+    document.querySelectorAll('.category-option').forEach(opt => opt.classList.remove('active'));
+    document.querySelector('.category-option[data-value="programming"]').classList.add('active');
+    document.getElementById('courseCategory').value = 'programming';
+  }
 }
 
-function fecharModal(idModal) {
-  const modal = document.getElementById(idModal);
-  modal.classList.remove('ativo');
-  modal.setAttribute('aria-hidden', 'true');
+function closeModal(modalId) {
+  document.getElementById(modalId).classList.remove('active');
   document.body.style.overflow = 'auto';
 
-  // Serve para limpar os campos quando fecha
-  if (idModal === 'modalNovaTrilha') limparFormularioTrilha();
-  if (idModal === 'modalAula') limparFormularioAula();
-  if (idModal === 'modalConfirmacao') callbackConfirmacao = null;
-
-  // Serve para evitar estado preso da edição do marcador
-  if (idModal === 'modalDetalhesTrilha') edicaoMarcador = null;
-}
-
-/* =========================================================
-   CONFIRMAÇÃO
-   Serve para reduzir erros em ações destrutivas.
-   ========================================================= */
-function mostrarConfirmacao(mensagem, aoConfirmar) {
-  document.getElementById('mensagemConfirmacao').textContent = mensagem;
-  callbackConfirmacao = aoConfirmar;
-  abrirModal('modalConfirmacao');
-}
-
-/* =========================================================
-   STORAGE
-   Serve para persistir dados do usuário.
-   ========================================================= */
-function salvarNoStorage() {
-  localStorage.setItem(CHAVE_STORAGE, JSON.stringify(trilhas));
-}
-
-function carregarDoStorage() {
-  const bruto = localStorage.getItem(CHAVE_STORAGE);
-  if (!bruto) return dadosPadrao;
-  try {
-    const parsed = JSON.parse(bruto);
-    return Array.isArray(parsed) ? parsed : dadosPadrao;
-  } catch {
-    return dadosPadrao;
+  /* Serve para limpar campos ao fechar modal */
+  if (modalId === 'addModal') {
+    document.getElementById('courseName').value = '';
+    document.getElementById('courseImage').value = '';
+    document.getElementById('courseColor').value = '#E50914';
+    document.getElementById('colorValue').textContent = '#E50914';
+  } else if (modalId === 'lessonModal') {
+    document.getElementById('editLessonTitle').value = '';
+    document.getElementById('editLessonUrl').value = '';
+    document.getElementById('editLessonTime').value = '';
+    document.getElementById('editLessonStatus').value = 'progress';
+    document.getElementById('lessonIndex').value = '';
+    document.getElementById('lessonModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nova Videoaula';
+    document.querySelectorAll('.status-option').forEach(opt => opt.classList.remove('active'));
+    document.querySelector('.status-option[data-value="progress"]').classList.add('active');
+    currentLessonIndex = null;
+  } else if (modalId === 'courseDetailsModal') {
+    currentCourseId = null;
+    editingTimestamp = null;
+  } else if (modalId === 'confirmModal') {
+    confirmCallback = null;
   }
 }
 
-/* =========================================================
-   TRILHAS - CRIAÇÃO
-   Serve para cadastrar e abrir a trilha recém-criada.
-   ========================================================= */
-function salvarNovaTrilha() {
-  const nome = document.getElementById('nomeTrilha').value.trim();
-  const categoria = document.getElementById('categoriaTrilha').value;
-  const imagemInformada = document.getElementById('imagemTrilha').value.trim();
-  const cor = document.getElementById('corTrilha').value;
+/* Serve para abrir uma confirmação com callback */
+function showConfirm(message, callback) {
+  document.getElementById('confirmMessage').textContent = message;
+  confirmCallback = callback;
+  openModal('confirmModal');
+}
 
-  if (!nome) {
-    alert('Por favor, informe o nome da trilha.');
+/* =========================================================
+   CRIAR TRILHA
+   Serve para adicionar uma trilha no sistema
+   ========================================================= */
+function saveNewCourse() {
+  const name = document.getElementById('courseName').value.trim();
+  const category = document.getElementById('courseCategory').value;
+  const image = document.getElementById('courseImage').value.trim() || IMAGENS_CATEGORIA[category] || IMAGEM_PADRAO;
+  const color = document.getElementById('courseColor').value;
+
+  if (!name) {
+    alert('Por favor, insira um nome para a trilha.');
     return;
   }
 
-  const novaTrilha = {
-    id: 'trilha-' + Date.now(),
-    nome,
-    categoria,
-    imagem: imagemInformada || IMAGENS_CATEGORIA[categoria] || IMAGEM_PADRAO,
-    cor,
-    criadoEm: new Date().toISOString(),
-    aulas: []
+  const newCourse = {
+    id: 'course-' + Date.now(),
+    name,
+    category,
+    image,
+    color,
+    createdAt: new Date().toISOString(),
+    links: []
   };
 
-  trilhas.push(novaTrilha);
-  salvarNoStorage();
+  data.push(newCourse);
+  saveToStorage();
+  renderCourses();
+  updateCoursesCount();
+  closeModal('addModal');
 
-  fecharModal('modalNovaTrilha');
-  renderizarTrilhas();
-  atualizarContadorTrilhas();
-
-  // Serve para o usuário já começar adicionando aulas
-  setTimeout(() => abrirDetalhesTrilha(novaTrilha.id), 200);
-}
-
-function limparFormularioTrilha() {
-  document.getElementById('nomeTrilha').value = '';
-  document.getElementById('imagemTrilha').value = '';
-  document.getElementById('corTrilha').value = '#E50914';
-  document.getElementById('valorCor').textContent = '#E50914';
-
-  // Serve para voltar ao padrão inicial
-  document.querySelectorAll('.opcao-categoria').forEach((o) => o.classList.remove('ativo'));
-  document.querySelector('.opcao-categoria[data-valor="programacao"]').classList.add('ativo');
-  document.getElementById('categoriaTrilha').value = 'programacao';
+  /* Serve para abrir automaticamente a trilha criada */
+  setTimeout(() => openCourseDetails(newCourse.id), 200);
 }
 
 /* =========================================================
-   TRILHAS - EXCLUSÃO
-   Serve para remover trilha e atualizar a interface.
+   MODAL AULA (NOVA/EDITAR)
+   Serve para abrir o formulário da aula (com preenchimento se for edição)
    ========================================================= */
-function excluirTrilha(idTrilha) {
-  trilhas = trilhas.filter((t) => t.id !== idTrilha);
-  salvarNoStorage();
-  renderizarTrilhas();
-  atualizarContadorTrilhas();
-}
-
-/* =========================================================
-   AULAS - MODAL NOVA/EDITAR
-   Serve para cadastrar ou atualizar aula na trilha.
-   ========================================================= */
-function abrirModalAula(idTrilha, indiceAula = null) {
-  idTrilhaAtual = idTrilha;
-  indiceAulaAtual = indiceAula;
-
-  const titulo = document.getElementById('tituloModalAula');
-
-  // Serve para diferenciar visualmente criação e edição
-  if (indiceAula !== null) {
-    titulo.innerHTML = '<i class="fas fa-edit"></i> Editar Aula';
-    preencherFormularioAula(idTrilha, indiceAula);
-  } else {
-    titulo.innerHTML = '<i class="fas fa-plus-circle"></i> Nova Videoaula';
-    limparFormularioAula();
+function openLessonModal(courseId, lessonIndex = null, evento = null) {
+  /* Serve para evitar que o clique suba para o card */
+  if (evento) {
+    evento.stopPropagation();
+    evento.preventDefault();
   }
 
-  abrirModal('modalAula');
-}
+  currentCourseId = courseId;
+  currentLessonIndex = lessonIndex;
 
-function preencherFormularioAula(idTrilha, indiceAula) {
-  const trilha = trilhas.find((t) => t.id === idTrilha);
-  if (!trilha || !trilha.aulas[indiceAula]) return;
+  const title = document.getElementById('lessonModalTitle');
+  const lessonTitle = document.getElementById('editLessonTitle');
+  const lessonUrl = document.getElementById('editLessonUrl');
+  const lessonTime = document.getElementById('editLessonTime');
+  const lessonStatus = document.getElementById('editLessonStatus');
+  const statusOptions = document.querySelectorAll('.status-option');
 
-  const aula = trilha.aulas[indiceAula];
-  document.getElementById('tituloAula').value = aula.titulo;
-  document.getElementById('urlAula').value = aula.url;
-  document.getElementById('marcadorAula').value = aula.marcador || '';
-  document.getElementById('indiceAulaEdicao').value = String(indiceAula);
+  if (lessonIndex !== null) {
+    /* Serve para editar aula existente */
+    const course = data.find(c => c.id === courseId);
+    if (course && course.links[lessonIndex]) {
+      const lesson = course.links[lessonIndex];
+      title.innerHTML = '<i class="fas fa-edit"></i> Editar Aula';
+      lessonTitle.value = lesson.title;
+      lessonUrl.value = lesson.url;
+      lessonTime.value = lesson.time || '';
+      lessonStatus.value = lesson.status;
 
-  // Serve para refletir o status selecionado
-  document.querySelectorAll('.opcao-status').forEach((o) => o.classList.remove('ativo'));
-  document.querySelector(`.opcao-status[data-valor="${aula.status}"]`).classList.add('ativo');
-  document.getElementById('statusAula').value = aula.status;
-}
+      statusOptions.forEach(opt => opt.classList.remove('active'));
+      const activeOption = document.querySelector(`.status-option[data-value="${lesson.status}"]`);
+      if (activeOption) activeOption.classList.add('active');
 
-function limparFormularioAula() {
-  document.getElementById('tituloAula').value = '';
-  document.getElementById('urlAula').value = '';
-  document.getElementById('marcadorAula').value = '';
-  document.getElementById('indiceAulaEdicao').value = '';
+      document.getElementById('lessonIndex').value = String(lessonIndex);
+    }
+  } else {
+    /* Serve para cadastrar nova aula */
+    title.innerHTML = '<i class="fas fa-plus-circle"></i> Nova Videoaula';
+    lessonTitle.value = '';
+    lessonUrl.value = '';
+    lessonTime.value = '';
+    lessonStatus.value = 'progress';
 
-  document.querySelectorAll('.opcao-status').forEach((o) => o.classList.remove('ativo'));
-  document.querySelector('.opcao-status[data-valor="andamento"]').classList.add('ativo');
-  document.getElementById('statusAula').value = 'andamento';
+    statusOptions.forEach(opt => opt.classList.remove('active'));
+    document.querySelector('.status-option[data-value="progress"]').classList.add('active');
+
+    document.getElementById('lessonIndex').value = '';
+  }
+
+  /* Serve para fechar detalhes e abrir formulário de aula */
+  const detailsModal = document.getElementById('courseDetailsModal');
+  if (detailsModal.classList.contains('active')) detailsModal.classList.remove('active');
+
+  openModal('lessonModal');
 }
 
 /* =========================================================
-   AULAS - SALVAR
-   Serve para criar ou atualizar uma aula na trilha atual.
+   SALVAR AULA
+   Serve para criar ou atualizar uma aula dentro da trilha atual
    ========================================================= */
-function salvarAula() {
-  if (!idTrilhaAtual) return;
+function saveLesson() {
+  const title = document.getElementById('editLessonTitle').value.trim();
+  const url = document.getElementById('editLessonUrl').value.trim();
+  const time = document.getElementById('editLessonTime').value.trim();
+  const status = document.getElementById('editLessonStatus').value;
+  const lessonIndex = document.getElementById('lessonIndex').value;
 
-  const titulo = document.getElementById('tituloAula').value.trim();
-  const url = document.getElementById('urlAula').value.trim();
-  const marcador = document.getElementById('marcadorAula').value.trim();
-  const status = document.getElementById('statusAula').value;
-  const indiceEdicao = document.getElementById('indiceAulaEdicao').value;
-
-  if (!titulo || !url) {
-    alert('Por favor, preencha o título e o link da aula.');
+  if (!title || !url) {
+    alert('Por favor, preencha o título e a URL da aula.');
     return;
   }
 
-  if (!urlValida(url)) {
-    alert('Por favor, informe uma URL válida.');
+  if (!isValidUrl(url)) {
+    alert('Por favor, insira uma URL válida.');
     return;
   }
 
-  const trilha = trilhas.find((t) => t.id === idTrilhaAtual);
-  if (!trilha) return;
+  const course = data.find(c => c.id === currentCourseId);
+  if (!course) return;
 
-  // Serve para decidir entre criar uma nova aula ou atualizar uma existente
-  if (indiceEdicao !== '') {
-    const idx = Number(indiceEdicao);
-    trilha.aulas[idx] = { ...trilha.aulas[idx], titulo, url, marcador, status };
-  } else {
-    trilha.aulas.push({
-      id: 'aula-' + Date.now(),
-      titulo,
+  if (lessonIndex !== '') {
+    /* Serve para atualizar aula existente */
+    course.links[lessonIndex] = {
+      ...course.links[lessonIndex],
+      title,
       url,
-      marcador,
+      time,
+      status
+    };
+  } else {
+    /* Serve para inserir nova aula */
+    course.links.push({
+      id: 'lesson-' + Date.now(),
+      title,
+      url,
+      time,
       status
     });
   }
 
-  salvarNoStorage();
-  fecharModal('modalAula');
+  saveToStorage();
+  closeModal('lessonModal');
 
-  // Serve para o usuário voltar automaticamente para os detalhes atualizados
-  abrirDetalhesTrilha(idTrilhaAtual);
-  renderizarTrilhas();
-  atualizarContadorTrilhas();
+  /* Serve para reabrir detalhes atualizados */
+  setTimeout(() => {
+    if (currentCourseId) openCourseDetails(currentCourseId);
+  }, 100);
+
+  renderCourses();
+  updateCoursesCount();
 }
 
 /* =========================================================
-   AULAS - AÇÕES (STATUS / EXCLUIR / MARCAR TODAS)
-   Servem para atualizar progresso com poucos cliques.
+   EDITAR “ONDE PAREI” DIRETO NA LISTA
+   Serve para trocar o marcador sem abrir modal de aula
    ========================================================= */
-function alternarStatusAula(idTrilha, idAula) {
-  const trilha = trilhas.find((t) => t.id === idTrilha);
-  if (!trilha) return;
+function editTimestamp(courseId, lessonIndex, evento) {
+  if (evento) {
+    evento.stopPropagation();
+    evento.preventDefault();
+  }
 
-  const aula = trilha.aulas.find((a) => a.id === idAula);
-  if (!aula) return;
-
-  aula.status = (aula.status === 'concluida') ? 'andamento' : 'concluida';
-  salvarNoStorage();
-
-  abrirDetalhesTrilha(idTrilha);
-  renderizarTrilhas();
-  atualizarContadorTrilhas();
+  editingTimestamp = { courseId, lessonIndex };
+  openCourseDetails(courseId);
 }
 
-function marcarTodasConcluidas() {
-  if (!idTrilhaAtual) return;
+/* Serve para salvar marcador editado direto */
+function saveTimestampDirect(courseId, lessonIndex, evento) {
+  if (evento) {
+    evento.stopPropagation();
+    evento.preventDefault();
+  }
 
-  const trilha = trilhas.find((t) => t.id === idTrilhaAtual);
-  if (!trilha || trilha.aulas.length === 0) return;
+  const input = document.getElementById(`timestamp-input-${courseId}-${lessonIndex}`);
+  if (!input) return;
 
-  mostrarConfirmacao('Marcar todas as aulas como concluídas?', () => {
-    trilha.aulas.forEach((a) => (a.status = 'concluida'));
-    salvarNoStorage();
-    abrirDetalhesTrilha(idTrilhaAtual);
-    renderizarTrilhas();
-    atualizarContadorTrilhas();
+  const course = data.find(c => c.id === courseId);
+  if (!course || !course.links[lessonIndex]) return;
+
+  course.links[lessonIndex].time = input.value.trim();
+  saveToStorage();
+  editingTimestamp = null;
+
+  openCourseDetails(courseId);
+  renderCourses();
+  updateCoursesCount();
+}
+
+/* Serve para cancelar edição do marcador */
+function cancelTimestampEditDirect(courseId, lessonIndex, evento) {
+  if (evento) {
+    evento.stopPropagation();
+    evento.preventDefault();
+  }
+
+  editingTimestamp = null;
+  openCourseDetails(courseId);
+}
+
+/* =========================================================
+   STATUS / EXCLUSÃO DE AULA
+   ========================================================= */
+function toggleLessonStatus(courseId, lessonIndex, evento) {
+  if (evento) {
+    evento.stopPropagation();
+    evento.preventDefault();
+  }
+
+  const course = data.find(c => c.id === courseId);
+  if (!course || !course.links[lessonIndex]) return;
+
+  course.links[lessonIndex].status =
+    course.links[lessonIndex].status === 'done' ? 'progress' : 'done';
+
+  saveToStorage();
+
+  if (document.getElementById('courseDetailsModal').classList.contains('active') && courseId === currentCourseId) {
+    openCourseDetails(courseId);
+  } else {
+    renderCourses();
+  }
+
+  updateCoursesCount();
+}
+
+function deleteLesson(courseId, lessonIndex, evento) {
+  if (evento) {
+    evento.stopPropagation();
+    evento.preventDefault();
+  }
+
+  showConfirm('Tem certeza que deseja excluir esta aula?', () => {
+    const course = data.find(c => c.id === courseId);
+    if (!course) return;
+
+    course.links.splice(lessonIndex, 1);
+    saveToStorage();
+
+    if (document.getElementById('courseDetailsModal').classList.contains('active') && courseId === currentCourseId) {
+      openCourseDetails(courseId);
+    } else {
+      renderCourses();
+    }
+
+    updateCoursesCount();
   });
 }
 
-function excluirAula(idTrilha, idAula) {
-  mostrarConfirmacao('Tem certeza que deseja excluir esta aula?', () => {
-    const trilha = trilhas.find((t) => t.id === idTrilha);
-    if (!trilha) return;
+/* =========================================================
+   EXCLUSÃO DE TRILHA
+   Serve para remover uma trilha inteira
+   ========================================================= */
+function deleteCourse(courseId) {
+  const courseIndex = data.findIndex(c => c.id === courseId);
+  if (courseIndex === -1) return;
+  data.splice(courseIndex, 1);
+  saveToStorage();
+  renderCourses();
+  updateCoursesCount();
+}
 
-    trilha.aulas = trilha.aulas.filter((a) => a.id !== idAula);
-    salvarNoStorage();
+/* =========================================================
+   MARCAR TODAS COMO CONCLUÍDAS
+   Serve para finalizar todas as aulas de uma trilha
+   ========================================================= */
+function markAllAsDone() {
+  if (!currentCourseId) return;
 
-    abrirDetalhesTrilha(idTrilha);
-    renderizarTrilhas();
-    atualizarContadorTrilhas();
+  const course = data.find(c => c.id === currentCourseId);
+  if (!course || course.links.length === 0) return;
+
+  showConfirm('Marcar todas as aulas como concluídas?', () => {
+    course.links.forEach(link => (link.status = 'done'));
+    saveToStorage();
+    openCourseDetails(currentCourseId);
+    renderCourses();
+    updateCoursesCount();
   });
 }
 
 /* =========================================================
-   “ONDE PAREI” - EDIÇÃO DIRETA
-   Serve para atualizar o marcador sem abrir o modal da aula.
+   CÁLCULOS E FORMATAÇÃO
    ========================================================= */
-function iniciarEdicaoMarcador(idTrilha, idAula) {
-  edicaoMarcador = { idTrilha, idAula };
-  abrirDetalhesTrilha(idTrilha);
+function calculateProgress(links) {
+  if (!links || links.length === 0) return 0;
+  const completed = links.filter(link => link.status === 'done').length;
+  return Math.round((completed / links.length) * 100);
 }
 
-function salvarMarcadorDireto(idTrilha, idAula) {
-  const input = document.querySelector(`[data-input-marcador="${idAula}"]`);
-  const valor = (input?.value || '').trim();
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const trilha = trilhas.find((t) => t.id === idTrilha);
-  if (!trilha) return;
-
-  const aula = trilha.aulas.find((a) => a.id === idAula);
-  if (!aula) return;
-
-  aula.marcador = valor;
-  salvarNoStorage();
-  edicaoMarcador = null;
-
-  abrirDetalhesTrilha(idTrilha);
-  renderizarTrilhas();
+  if (diffDays === 1) return 'Hoje';
+  if (diffDays === 2) return 'Ontem';
+  if (diffDays <= 7) return `${diffDays} dias atrás`;
+  if (diffDays <= 30) return `${Math.floor(diffDays / 7)} semanas atrás`;
+  return date.toLocaleDateString('pt-BR');
 }
 
-function cancelarEdicaoMarcador(idTrilha) {
-  edicaoMarcador = null;
-  abrirDetalhesTrilha(idTrilha);
+function updateCoursesCount() {
+  const container = document.getElementById('coursesContainer');
+  const courseCards = container.querySelectorAll('.course-card').length;
+  document.getElementById('coursesCount').textContent =
+    `${courseCards} ${courseCards === 1 ? 'trilha' : 'trilhas'}`;
 }
 
 /* =========================================================
-   PROGRESSO
-   Serve para calcular porcentagem concluída de uma trilha.
+   RENDERIZAR TRILHAS (CARDS)
+   Serve para montar os cards conforme filtro e busca
    ========================================================= */
-function calcularProgresso(aulas) {
-  if (!aulas || aulas.length === 0) return 0;
-  const concluidas = aulas.filter((a) => a.status === 'concluida').length;
-  return Math.round((concluidas / aulas.length) * 100);
-}
+function renderCourses() {
+  const container = document.getElementById('coursesContainer');
+  let filteredCourses = data;
 
-/* =========================================================
-   DATA “HUMANA”
-   Serve para exibir “Hoje”, “Ontem”, etc.
-   ========================================================= */
-function formatarDataHumana(iso) {
-  const data = new Date(iso);
-  const agora = new Date();
-  const diffMs = Math.abs(agora - data);
-  const diffDias = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDias === 1) return 'Hoje';
-  if (diffDias === 2) return 'Ontem';
-  if (diffDias <= 7) return `${diffDias} dias atrás`;
-  if (diffDias <= 30) return `${Math.floor(diffDias / 7)} semanas atrás`;
-  return data.toLocaleDateString('pt-BR');
-}
-
-/* =========================================================
-   RENDERIZAÇÃO DAS TRILHAS (LISTA PRINCIPAL)
-   Serve para mostrar cards conforme filtro e busca.
-   ========================================================= */
-function renderizarTrilhas() {
-  const container = document.getElementById('containerTrilhas');
-
-  let lista = [...trilhas];
-
-  // Filtro por progresso
-  if (filtroAtivo === 'andamento') {
-    lista = lista.filter((t) => calcularProgresso(t.aulas) < 100);
-  } else if (filtroAtivo === 'concluidas') {
-    lista = lista.filter((t) => t.aulas.length > 0 && calcularProgresso(t.aulas) === 100);
+  if (activeFilter === 'progress') {
+    filteredCourses = data.filter(course => calculateProgress(course.links) < 100);
+  } else if (activeFilter === 'done') {
+    filteredCourses = data.filter(course => course.links.length > 0 && calculateProgress(course.links) === 100);
   }
 
-  // Busca (nome, categoria, aulas)
-  if (termoBusca) {
-    lista = lista.filter((t) => {
-      const nomeOk = t.nome.toLowerCase().includes(termoBusca);
-      const catOk = (NOMES_CATEGORIA[t.categoria] || '').toLowerCase().includes(termoBusca);
-      const aulaOk = (t.aulas || []).some((a) =>
-        (a.titulo || '').toLowerCase().includes(termoBusca) ||
-        (a.url || '').toLowerCase().includes(termoBusca) ||
-        (a.marcador || '').toLowerCase().includes(termoBusca)
-      );
-      return nomeOk || catOk || aulaOk;
-    });
+  if (currentSearchTerm) {
+    filteredCourses = filteredCourses.filter(course =>
+      course.name.toLowerCase().includes(currentSearchTerm) ||
+      NOMES_CATEGORIA[course.category].toLowerCase().includes(currentSearchTerm) ||
+      course.links.some(link =>
+        link.title.toLowerCase().includes(currentSearchTerm) ||
+        link.url.toLowerCase().includes(currentSearchTerm) ||
+        (link.time && link.time.toLowerCase().includes(currentSearchTerm))
+      )
+    );
   }
 
-  // Ordenação: mais novas primeiro
-  lista.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
+  filteredCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  if (lista.length === 0) {
-    container.innerHTML = `
-      <div class="estado-vazio" style="grid-column: 1 / -1;">
-        <i class="fas fa-search"></i>
-        <h5>Nenhuma trilha encontrada</h5>
-        <p>${termoBusca ? 'Nenhuma trilha corresponde à sua busca.' : 'Comece criando sua primeira trilha!'}</p>
-        <button class="botao-primario" id="botaoCriarPrimeira" style="margin-top:20px;">
-          <i class="fas fa-plus-circle"></i> Criar Primeira Trilha
-        </button>
-      </div>
-    `;
-    document.getElementById('botaoCriarPrimeira').addEventListener('click', () => abrirModal('modalNovaTrilha'));
-    return;
-  }
-
-  container.innerHTML = lista.map((t) => {
-    const progresso = calcularProgresso(t.aulas);
-    const total = t.aulas.length;
-    const concluidas = t.aulas.filter((a) => a.status === 'concluida').length;
-    const categoriaNome = NOMES_CATEGORIA[t.categoria] || 'Categoria';
-    const icone = ICONES_CATEGORIA[t.categoria] || 'fa-tag';
+  container.innerHTML = filteredCourses.map(course => {
+    const progress = calculateProgress(course.links);
+    const completedCount = course.links.filter(link => link.status === 'done').length;
+    const totalCount = course.links.length;
+    const formattedDate = formatDate(course.createdAt);
+    const categoryName = NOMES_CATEGORIA[course.category] || course.category;
+    const categoryIcon = ICONES_CATEGORIA[course.category] || 'fa-tag';
 
     return `
-      <div class="card-trilha" data-acao="abrir-detalhes" data-id-trilha="${t.id}">
-        <div class="imagem-trilha" style="background-image:url('${t.imagem}')">
-          <div class="sobreposicao-trilha">
-            <span class="badge-categoria-card">
-              <i class="fas ${icone}"></i> ${categoriaNome}
+      <div class="course-card" onclick="openCourseDetails('${course.id}')">
+        <div class="course-image" style="background-image: url('${course.image}');">
+          <div class="course-overlay">
+            <span class="course-category">
+              <i class="fas ${categoryIcon}"></i> ${categoryName}
             </span>
           </div>
         </div>
 
-        <div class="conteudo-trilha">
-          <h3 class="titulo-trilha">${t.nome}</h3>
+        <div class="course-content">
+          <h3 class="course-title">${course.name}</h3>
 
-          <div class="bloco-progresso-card">
-            <div class="barra-progresso">
-              <div class="preenchimento-progresso" style="width:${progresso}%"></div>
+          <div class="course-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progress}%"></div>
             </div>
-            <div class="texto-progresso-card">${progresso}% concluído • ${formatarDataHumana(t.criadoEm)}</div>
+            <div class="progress-text">${progress}% concluído • ${formattedDate}</div>
           </div>
 
-          <div class="estatisticas-trilha">
-            <span><i class="fas fa-play-circle"></i> ${total} aulas</span>
-            <span><i class="fas fa-check-circle"></i> ${concluidas} concluídas</span>
+          <div class="course-stats">
+            <span><i class="fas fa-play-circle"></i> ${totalCount} aulas</span>
+            <span><i class="fas fa-check-circle"></i> ${completedCount} concluídas</span>
           </div>
 
-          <div class="acoes-trilha-card">
-            <button class="botao-primario botao-pequeno" data-acao="continuar" data-id-trilha="${t.id}" type="button">
+          <div class="course-actions">
+            <button class="btn-primary" onclick="event.stopPropagation(); openCourseDetails('${course.id}')">
               <i class="fas fa-play"></i> Continuar
             </button>
-            <button class="botao-secundario botao-pequeno" data-acao="nova-aula" data-id-trilha="${t.id}" type="button">
+
+            <button class="btn-secondary" onclick="event.stopPropagation(); openLessonModal('${course.id}', null, event)">
               <i class="fas fa-plus"></i> Aula
             </button>
           </div>
@@ -631,194 +649,176 @@ function renderizarTrilhas() {
       </div>
     `;
   }).join('');
-}
 
-/* =========================================================
-   CLIQUES NO CARD (DELEGAÇÃO)
-   Serve para abrir detalhes / abrir modal aula sem conflitos.
-   ========================================================= */
-function tratarCliqueTrilha(e) {
-  const alvo = e.target.closest('[data-acao]');
-  if (!alvo) {
-    // clique no card sem botão
-    const card = e.target.closest('.card-trilha');
-    if (card) abrirDetalhesTrilha(card.dataset.idTrilha);
-    return;
-  }
-
-  const acao = alvo.dataset.acao;
-  const idTrilha = alvo.dataset.idTrilha;
-
-  if (acao === 'continuar') {
-    e.stopPropagation();
-    abrirDetalhesTrilha(idTrilha);
-  }
-
-  if (acao === 'nova-aula') {
-    e.stopPropagation();
-    abrirModalAula(idTrilha);
-  }
-
-  if (acao === 'abrir-detalhes') {
-    abrirDetalhesTrilha(idTrilha);
+  if (filteredCourses.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1;">
+        <i class="fas fa-search"></i>
+        <h5>Nenhuma trilha encontrada</h5>
+        <p>${currentSearchTerm ? 'Nenhuma trilha corresponde à sua busca.' : 'Comece criando sua primeira trilha de estudos!'}</p>
+        <button class="btn-primary" onclick="openModal('addModal')" style="margin-top: 20px;">
+          <i class="fas fa-plus-circle"></i> Criar Primeira Trilha
+        </button>
+      </div>
+    `;
   }
 }
 
 /* =========================================================
    DETALHES DA TRILHA
-   Serve para preencher modal com progresso e lista de aulas.
+   Serve para preencher modal com dados e aulas
    ========================================================= */
-function abrirDetalhesTrilha(idTrilha) {
-  idTrilhaAtual = idTrilha;
+function openCourseDetails(courseId) {
+  currentCourseId = courseId;
+  const course = data.find(c => c.id === courseId);
+  if (!course) return;
 
-  const trilha = trilhas.find((t) => t.id === idTrilha);
-  if (!trilha) return;
+  const progress = calculateProgress(course.links);
+  const completedCount = course.links.filter(link => link.status === 'done').length;
+  const totalCount = course.links.length;
+  const categoryName = NOMES_CATEGORIA[course.category] || course.category;
+  const formattedDate = formatDate(course.createdAt);
 
-  const progresso = calcularProgresso(trilha.aulas);
-  const total = trilha.aulas.length;
-  const concluidas = trilha.aulas.filter((a) => a.status === 'concluida').length;
-  const categoriaNome = NOMES_CATEGORIA[trilha.categoria] || 'Categoria';
-  const icone = ICONES_CATEGORIA[trilha.categoria] || 'fa-tag';
+  document.getElementById('courseDetailsTitle').textContent = course.name;
+  document.getElementById('courseDetailsImage').style.backgroundImage = `url('${course.image}')`;
+  document.getElementById('courseProgressFill').style.width = `${progress}%`;
+  document.getElementById('courseProgressText').textContent = `Criado ${formattedDate} • ${progress}% concluído`;
+  document.getElementById('courseTotalLessons').textContent = totalCount;
+  document.getElementById('courseCompletedLessons').textContent = completedCount;
+  document.getElementById('courseCategoryBadge').innerHTML =
+    `<i class="fas ${ICONES_CATEGORIA[course.category] || 'fa-tag'}"></i> ${categoryName}`;
 
-  document.getElementById('tituloDetalhesTrilha').textContent = trilha.nome;
-  document.getElementById('imagemDetalhesTrilha').style.backgroundImage = `url('${trilha.imagem}')`;
-  document.getElementById('preenchimentoProgresso').style.width = `${progresso}%`;
-  document.getElementById('textoProgresso').textContent = `Criado ${formatarDataHumana(trilha.criadoEm)} • ${progresso}% concluído`;
-  document.getElementById('totalAulas').textContent = total;
-  document.getElementById('aulasConcluidas').textContent = concluidas;
-  document.getElementById('badgeCategoria').innerHTML = `<i class="fas ${icone}"></i> ${categoriaNome}`;
+  const lessonsList = document.getElementById('courseLessonsList');
+  const emptyState = document.getElementById('emptyLessonsState');
 
-  renderizarAulas(trilha);
+  if (course.links.length === 0) {
+    lessonsList.style.display = 'none';
+    emptyState.style.display = 'block';
+  } else {
+    lessonsList.style.display = 'block';
+    emptyState.style.display = 'none';
 
-  abrirModal('modalDetalhesTrilha');
-}
+    lessonsList.innerHTML = course.links.map((lesson, index) => {
+      const isEditing = editingTimestamp &&
+        editingTimestamp.courseId === courseId &&
+        editingTimestamp.lessonIndex === index;
 
-/* =========================================================
-   LISTA DE AULAS (NO DETALHES)
-   Serve para montar a UI de aulas e ações.
-   ========================================================= */
-function renderizarAulas(trilha) {
-  const lista = document.getElementById('listaAulas');
-  const vazio = document.getElementById('estadoVazioAulas');
+      if (isEditing) {
+        return `
+          <div class="lesson-item">
+            <div class="lesson-info">
+              <div class="lesson-title">
+                <span>${lesson.title}</span>
+                <span class="lesson-status ${lesson.status === 'done' ? 'status-done' : 'status-progress'}">
+                  ${lesson.status === 'done' ? 'CONCLUÍDO' : 'EM ANDAMENTO'}
+                </span>
+              </div>
 
-  if (!trilha.aulas || trilha.aulas.length === 0) {
-    lista.innerHTML = '';
-    lista.style.display = 'none';
-    vazio.style.display = 'block';
-    return;
-  }
+              <a href="${lesson.url}" target="_blank" class="lesson-url">
+                <i class="fas fa-external-link-alt"></i> ${lesson.url}
+              </a>
 
-  lista.style.display = 'block';
-  vazio.style.display = 'none';
+              <div class="lesson-timestamp">
+                <div class="timestamp-input" id="timestamp-${courseId}-${index}">
+                  <input type="text"
+                         id="timestamp-input-${courseId}-${index}"
+                         value="${lesson.time || ''}"
+                         placeholder="Ex: 15:30 ou 'Capítulo 3 - Arrays'">
+                  <button onclick="saveTimestampDirect('${courseId}', ${index}, event)">
+                    <i class="fas fa-check"></i> Salvar
+                  </button>
+                  <button onclick="cancelTimestampEditDirect('${courseId}', ${index}, event)"
+                          style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.1);">
+                    <i class="fas fa-times"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
 
-  lista.innerHTML = trilha.aulas.map((aula, idx) => {
-    const statusClasse = aula.status === 'concluida' ? 'status-concluida' : 'status-andamento';
-    const statusTexto = aula.status === 'concluida' ? 'CONCLUÍDA' : 'EM ANDAMENTO';
+            <div class="lesson-actions">
+              <button class="btn-sm ${lesson.status === 'done' ? 'btn-secondary' : 'btn-primary'}"
+                      onclick="toggleLessonStatus('${course.id}', ${index}, event)">
+                <i class="fas ${lesson.status === 'done' ? 'fa-undo' : 'fa-check'}"></i>
+                ${lesson.status === 'done' ? 'Voltar' : 'Concluir'}
+              </button>
 
-    const estaEditandoMarcador =
-      edicaoMarcador && edicaoMarcador.idTrilha === trilha.id && edicaoMarcador.idAula === aula.id;
+              <button class="btn-sm btn-warning" onclick="openLessonModal('${course.id}', ${index}, event)">
+                <i class="fas fa-edit"></i> Editar
+              </button>
 
-    const blocoMarcador = estaEditandoMarcador
-      ? `
-        <div class="marcador-edicao">
-          <input data-input-marcador="${aula.id}" type="text" value="${aula.marcador || ''}" placeholder="Ex: 15:30 ou uma nota">
-          <button class="botao-salvar" data-acao-aula="salvar-marcador" data-id-aula="${aula.id}" type="button">
-            <i class="fas fa-check"></i>
-          </button>
-          <button class="botao-cancelar" data-acao-aula="cancelar-marcador" data-id-aula="${aula.id}" type="button">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      `
-      : `
-        <div class="marcador-exibicao" data-acao-aula="editar-marcador" data-id-aula="${aula.id}">
-          <i class="fas fa-bookmark"></i>
-          <span>${aula.marcador ? aula.marcador : 'Clique para adicionar onde parou'}</span>
-          <small style="margin-left:auto; opacity:.6; font-size:11px;">
-            <i class="fas fa-edit"></i>
-          </small>
+              <button class="btn-sm btn-danger" onclick="deleteLesson('${course.id}', ${index}, event)">
+                <i class="fas fa-trash"></i> Excluir
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="lesson-item">
+          <div class="lesson-info">
+            <div class="lesson-title">
+              <span>${lesson.title}</span>
+              <span class="lesson-status ${lesson.status === 'done' ? 'status-done' : 'status-progress'}">
+                ${lesson.status === 'done' ? 'CONCLUÍDO' : 'EM ANDAMENTO'}
+              </span>
+            </div>
+
+            <a href="${lesson.url}" target="_blank" class="lesson-url">
+              <i class="fas fa-external-link-alt"></i> ${lesson.url}
+            </a>
+
+            <div class="lesson-timestamp">
+              ${lesson.time ? `
+                <div class="timestamp-content" id="timestamp-${courseId}-${index}" onclick="editTimestamp('${courseId}', ${index}, event)">
+                  <i class="fas fa-bookmark"></i>
+                  <span>${lesson.time}</span>
+                  <small style="margin-left: auto; color: rgba(255,255,255,0.5); font-size: 11px;">
+                    <i class="fas fa-edit"></i> editar
+                  </small>
+                </div>
+              ` : `
+                <div class="timestamp-content" id="timestamp-${courseId}-${index}" onclick="editTimestamp('${courseId}', ${index}, event)" style="opacity: 0.7;">
+                  <i class="fas fa-bookmark"></i>
+                  <span>Clique para adicionar onde parou</span>
+                </div>
+              `}
+            </div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="btn-sm ${lesson.status === 'done' ? 'btn-secondary' : 'btn-primary'}"
+                    onclick="toggleLessonStatus('${course.id}', ${index}, event)">
+              <i class="fas ${lesson.status === 'done' ? 'fa-undo' : 'fa-check'}"></i>
+              ${lesson.status === 'done' ? 'Voltar' : 'Concluir'}
+            </button>
+
+            <button class="btn-sm btn-warning" onclick="openLessonModal('${course.id}', ${index}, event)">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+
+            <button class="btn-sm btn-danger" onclick="deleteLesson('${course.id}', ${index}, event)">
+              <i class="fas fa-trash"></i> Excluir
+            </button>
+          </div>
         </div>
       `;
+    }).join('');
+  }
 
-    return `
-      <div class="item-aula">
-        <div class="info-aula">
-          <div class="titulo-aula">
-            <span>${aula.titulo}</span>
-            <span class="status-aula ${statusClasse}">${statusTexto}</span>
-          </div>
-
-          <a class="link-aula" href="${aula.url}" target="_blank" rel="noreferrer">
-            <i class="fas fa-external-link-alt"></i> ${aula.url}
-          </a>
-
-          <div class="bloco-marcador">
-            ${blocoMarcador}
-          </div>
-        </div>
-
-        <div class="acoes-aula">
-          <button class="botao-pequeno ${aula.status === 'concluida' ? 'botao-secundario' : 'botao-primario'}"
-                  data-acao-aula="alternar-status" data-id-aula="${aula.id}" type="button">
-            <i class="fas ${aula.status === 'concluida' ? 'fa-undo' : 'fa-check'}"></i>
-            ${aula.status === 'concluida' ? 'Voltar' : 'Concluir'}
-          </button>
-
-          <button class="botao-pequeno botao-secundario"
-                  data-acao-aula="editar" data-indice="${idx}" type="button">
-            <i class="fas fa-edit"></i> Editar
-          </button>
-
-          <button class="botao-pequeno botao-perigo"
-                  data-acao-aula="excluir" data-id-aula="${aula.id}" type="button">
-            <i class="fas fa-trash"></i> Excluir
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
+  openModal('courseDetailsModal');
 }
 
 /* =========================================================
-   CLIQUES NA LISTA DE AULAS (DELEGAÇÃO)
-   Serve para executar ações por data-atributos.
+   UTILITÁRIOS
    ========================================================= */
-function tratarCliqueAula(e) {
-  const botao = e.target.closest('[data-acao-aula]');
-  if (!botao) return;
-
-  const acao = botao.dataset.acaoAula;
-  const idAula = botao.dataset.idAula;
-  const indice = botao.dataset.indice;
-
-  if (!idTrilhaAtual) return;
-
-  if (acao === 'alternar-status') alternarStatusAula(idTrilhaAtual, idAula);
-  if (acao === 'excluir') excluirAula(idTrilhaAtual, idAula);
-  if (acao === 'editar') abrirModalAula(idTrilhaAtual, Number(indice));
-
-  if (acao === 'editar-marcador') iniciarEdicaoMarcador(idTrilhaAtual, idAula);
-  if (acao === 'salvar-marcador') salvarMarcadorDireto(idTrilhaAtual, idAula);
-  if (acao === 'cancelar-marcador') cancelarEdicaoMarcador(idTrilhaAtual);
+function saveToStorage() {
+  localStorage.setItem(CHAVE_STORAGE, JSON.stringify(data));
 }
 
-/* =========================================================
-   CONTADOR
-   Serve para indicar quantos cards estão visíveis.
-   ========================================================= */
-function atualizarContadorTrilhas() {
-  const cards = document.querySelectorAll('#containerTrilhas .card-trilha').length;
-  document.getElementById('contadorTrilhas').textContent =
-    `${cards} ${cards === 1 ? 'trilha' : 'trilhas'}`;
-}
-
-/* =========================================================
-   URL
-   Serve para validar links antes de salvar aula.
-   ========================================================= */
-function urlValida(texto) {
+function isValidUrl(string) {
   try {
-    new URL(texto);
+    new URL(string);
     return true;
   } catch {
     return false;
